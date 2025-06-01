@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #22c55e;
+    --primary-dark: #16a34a;
+    --primary-light: #4ade80;
+    --secondary: #f59e0b;
+    --danger: #f03b20;
+    --warning: #feb24c;
+    --info: #51bbd6;
+    --fire-orange: #ea580c;
+    --fire-orange-light: rgba(234, 88, 12, 0.2);
+    --fire-orange-medium: rgba(234, 88, 12, 0.5);
+    --fire-orange-dark: rgba(234, 88, 12, 0.7);
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-50;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors
+           focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white
+           focus:ring-primary/50;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary-dark text-white
+           focus:ring-secondary/50;
+  }
+
+  .filter-panel {
+    @apply p-4 bg-gray-800 text-white rounded-lg shadow-lg;
+  }
+
+  .filter-section {
+    @apply space-y-2;
+  }
+
+  .filter-header {
+    @apply text-sm font-medium text-gray-300 mb-2;
+  }
+
+  .filter-input {
+    @apply w-full p-2 bg-gray-700 border border-gray-600 rounded-md 
+           focus:ring-2 focus:ring-blue-500 focus:border-transparent
+           placeholder-gray-500 text-white;
+  }
+
+  .confidence-button {
+    @apply px-3 py-2 bg-gray-700 border border-gray-600 rounded-md
+           text-sm text-gray-300 transition-colors duration-150
+           hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .confidence-button-active {
+    @apply bg-blue-600 border-blue-500 text-white
+           hover:bg-blue-700;
+  }
+  
+  /* Estilos para el componente FiresChart */
+  .chart-container {
+    @apply h-64 w-full bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-700
+           transition-all duration-300 hover:shadow-xl;
+  }
+  
+  .chart-container-empty {
+    @apply flex items-center justify-center text-gray-500 italic
+           bg-gray-800/50 border border-dashed border-gray-700;
+  }
+  
+  .dashboard-grid {
+    @apply grid gap-4 mt-4;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  .dashboard-card {
+    @apply bg-gray-800 rounded-lg shadow-lg overflow-hidden
+           transition-transform duration-300 hover:scale-[1.01];
+  }
+  
+  .dashboard-card-header {
+    @apply p-3 bg-gray-700 border-b border-gray-600 flex justify-between items-center;
+  }
+  
+  .dashboard-card-title {
+    @apply text-white font-medium text-sm;
+  }
+  
+  .dashboard-card-body {
+    @apply p-4;
+  }
+}
+
+.mapboxgl-popup-content {
+  @apply p-4 rounded-lg shadow-lg;
+}
+
+.mapboxgl-popup-close-button {
+  @apply p-2 text-gray-500 hover:text-gray-700 focus:outline-none;
+}
+
+.mapboxgl-ctrl-group {
+  @apply shadow-md rounded-lg overflow-hidden;
+}
+
+/* Estilos base */
+body {
+  @apply bg-gray-900 text-gray-100;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 640px) {
+  .chart-container {
+    @apply h-52;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+/* Animaciones para los gráficos */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chart-animation {
+  animation: fadeIn 0.5s ease-out forwards;
+}

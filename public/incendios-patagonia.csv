@@ -1,0 +1,10 @@
+Data Provider,Short Name,Version,Entry Title,Processing Level,Platform,Start Time,End Time
+"LANCEMODIS","MCD14DL","6.1NRT","MODIS/Aqua Terra Thermal Anomalies/Fire locations 1km FIRMS NRT (Vector data)","2","Terra, Aqua","2019-12-15T00:00:00.000Z",
+"LANCEMODIS","VJ114IMGTDL_NRT","2","VIIRS (NOAA-20/JPSS-1) I Band 375 m Active Fire Product NRT (Vector data)","2","NOAA-20","2024-10-01T00:00:00.000Z",
+"LANCEMODIS","VNP14IMGTDL_NRT","2","VIIRS (S-NPP) I Band 375 m Active Fire Product NRT (Vector data)","2","SUOMI-NPP","2016-01-01T00:00:00.000Z",
+"LANCEMODIS","VNP14_NRT","2","VIIRS/NPP Thermal Anomalies/Fire 6-Min L2 Swath 750m NRT - V2","2","Suomi-NPP","2024-03-05T00:00:00.000Z",
+"LANCEMODIS","VNP14IMG_NRT","2","VIIRS/NPP Active Fires 6-Min L2 Swath 375m - NRT","2","SUOMI-NPP","2020-02-14T00:00:00.000Z",
+"LANCEMODIS","VJ114IMG_NRT","2","VIIRS/JPSS1 Active Fires 6-Min L2 Swath 375m NRT","2","NOAA-20","2020-07-15T00:00:00.000Z",
+"LANCEMODIS","VJ214IMG_NRT","2","VIIRS/JPSS2 Active Fires 6-Min L2 Swath 375m NRT","2","NOAA-21","2024-01-10T00:00:00.000Z",
+"LANCEMODIS","VJ114_NRT","2","VIIRS/JPSS1 Thermal Anomalies/Fire 6-Min L2 Swath 750m NRT - V2","2","NOAA-20","2024-03-05T00:00:00.000Z",
+"LANCEMODIS","VJ214_NRT","2","VIIRS/JPSS2 Thermal Anomalies/Fire 6-Min L2 Swath 750m NRT - V2","2","NOAA-21","2024-03-05T00:00:00.000Z",

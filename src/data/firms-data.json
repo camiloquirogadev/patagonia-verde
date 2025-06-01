@@ -1,0 +1,84 @@
+{
+  "fires": [
+    {
+      "latitude": -45.57,
+      "longitude": -71.3,
+      "brightness": 350,
+      "acq_date": "2025-05-28",
+      "confidence": "high",
+      "satellite": "Terra"
+    },
+    {
+      "latitude": -45.5,
+      "longitude": -71.2,
+      "brightness": 280,
+      "acq_date": "2025-05-28",
+      "confidence": "medium",
+      "satellite": "Aqua"
+    },
+    {
+      "latitude": -45.6,
+      "longitude": -71.4,
+      "brightness": 420,
+      "acq_date": "2025-05-28",
+      "confidence": "high",
+      "satellite": "SUOMI-NPP"
+    },
+    {
+      "latitude": -45.4,
+      "longitude": -71.1,
+      "brightness": 390,
+      "acq_date": "2025-05-28",
+      "confidence": "high",
+      "satellite": "NOAA-20"
+    },
+    {
+      "latitude": -45.7,
+      "longitude": -71.5,
+      "brightness": 320,
+      "acq_date": "2025-05-28",
+      "confidence": "medium",
+      "satellite": "Terra"
+    },
+    {
+      "latitude": -45.3,
+      "longitude": -71.0,
+      "brightness": 450,
+      "acq_date": "2025-05-28",
+      "confidence": "high",
+      "satellite": "Aqua"
+    },
+    {
+      "latitude": -45.8,
+      "longitude": -71.6,
+      "brightness": 290,
+      "acq_date": "2025-05-28",
+      "confidence": "medium",
+      "satellite": "SUOMI-NPP"
+    },
+    {
+      "latitude": -45.2,
+      "longitude": -70.9,
+      "brightness": 410,
+      "acq_date": "2025-05-28",
+      "confidence": "high",
+      "satellite": "NOAA-20"
+    },
+    {
+      "latitude": -45.9,
+      "longitude": -71.7,
+      "brightness": 370,
+      "acq_date": "2025-05-28",
+      "confidence": "high",
+      "satellite": "Terra"
+    },
+    {
+      "latitude": -45.1,
+      "longitude": -70.8,
+      "brightness": 340,
+      "acq_date": "2025-05-28",
+      "confidence": "medium",
+      "satellite": "Aqua"
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+import './App.css';
+import { useState, useMemo, useCallback } from 'react';
+import { useFirmsData, type FirePoint } from './hooks/useFirmsData';
+import LoadingSpinner from './components/ui/LoadingSpinner';
+import { format, parseISO, isAfter, isBefore, startOfDay, endOfDay } from 'date-fns';
+import { es } from 'date-fns/locale';
+import MapComponent from './components/map/MapComponent';
+import FilterPanel, { type FilterCriteria } from './components/filters/FilterPanel';
+import FiresChart from './components/dashboard/FiresChart'; // Import FiresChart component
+
+const APP_VERSION = '1.0.0';
+
+interface Stats {
+  totalFires: number;
+  highConfidence: number;
+  averageBrightness: number;
+  satellites: string[];
+  dateRange: { start?: string | null; end?: string | null };
+}
+
+const initialFilterValues: FilterCriteria = {
+  startDate: format(new Date(new Date().setDate(new Date().getDate() - 7)), 'yyyy-MM-dd'),
+  endDate: format(new Date(), 'yyyy-MM-dd'),
+  minBrightness: 300,
+  maxBrightness: 500,
+  confidenceLevels: [],
+  satellite: null,
+};
+
+function App() {
+  const { fires, loading, error, refresh } = useFirmsData();
+  const [selectedFire, setSelectedFire] = useState<FirePoint | null>(null);
+
+  const [activeFilters, setActiveFilters] = useState<FilterCriteria>(initialFilterValues);
+  console.log('App.tsx -> Raw fires data:', fires);
+  console.log('App.tsx -> Active filters:', activeFilters);
+
+  const handleFilterChange = useCallback((newFilters: FilterCriteria) => {
+    setActiveFilters(newFilters);
+  }, []);
+
+  const handleResetFiltersApp = useCallback(() => {
+    setActiveFilters(initialFilterValues);
+  }, []);
+
+  const availableSatellites = useMemo(() => {
+    if (fires) {
+      const uniqueSatellites = new Set(fires.map(fire => fire.satellite).filter(Boolean));
+      return Array.from(uniqueSatellites) as string[];
+    }
+    return [];
+  }, [fires]);
+
+  const filteredFires = useMemo(() => {
+    if (loading || error || !fires) return [];
+
+    const result = fires.filter(fire => {
+      const fireDate = parseISO(fire.date);
+
+      let matchesDate = true;
+      if (activeFilters.startDate) {
+        const startDateFilter = startOfDay(parseISO(activeFilters.startDate));
+        if (isBefore(fireDate, startDateFilter)) matchesDate = false;
+      }
+      if (matchesDate && activeFilters.endDate) {
+        const endDateFilter = endOfDay(parseISO(activeFilters.endDate));
+        if (isAfter(fireDate, endDateFilter)) matchesDate = false;
+      }
+
+      let matchesConfidence = true;
+      if (activeFilters.confidenceLevels && activeFilters.confidenceLevels.length > 0) {
+        matchesConfidence = activeFilters.confidenceLevels.includes(fire.confidence.toLowerCase());
+      }
+
+      let matchesBrightness = true;
+      if (activeFilters.minBrightness !== null && activeFilters.minBrightness !== undefined) {
+        if (fire.brightness < activeFilters.minBrightness) matchesBrightness = false;
+      }
+      if (matchesBrightness && activeFilters.maxBrightness !== null && activeFilters.maxBrightness !== undefined) {
+        if (fire.brightness > activeFilters.maxBrightness) matchesBrightness = false;
+      }
+
+      let matchesSatellite = true;
+      if (activeFilters.satellite) {
+        matchesSatellite = fire.satellite === activeFilters.satellite;
+      }
+
+      return matchesDate && matchesConfidence && matchesBrightness && matchesSatellite;
+    });
+    console.log('App.tsx -> Filtered fires:', result);
+    return result;
+  }, [fires, activeFilters, loading, error]);
+
+  const stats = useMemo<Stats>(() => {
+    const firesToAnalyze = filteredFires;
+
+    return {
+      totalFires: firesToAnalyze.length,
+      highConfidence: firesToAnalyze.filter(f => f.confidence.toLowerCase() === 'high').length,
+      averageBrightness: firesToAnalyze.length
+        ? firesToAnalyze.reduce((sum, fire) => sum + fire.brightness, 0) / firesToAnalyze.length
+        : 0,
+      satellites: [...new Set(firesToAnalyze.map(f => f.satellite).filter(Boolean))] as string[],
+      dateRange: { start: activeFilters.startDate, end: activeFilters.endDate }
+    };
+  }, [filteredFires, activeFilters.startDate, activeFilters.endDate]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-center">
+          <LoadingSpinner />
+          <p className="mt-4 text-gray-600">Cargando datos de incendios...</p>
+          <p className="text-xs text-gray-400 mt-2">Versión {APP_VERSION}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <p className="text-gray-700 mb-6">{error.message || 'Ocurrió un error al cargar los datos de incendios'}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition-colors"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-screen overflow-hidden bg-gray-50" data-version={APP_VERSION}>
+      <header className="bg-green-800 text-white p-4 shadow-md">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <span className="text-green-800 text-xl">🔥</span>
+            </div>
+            <h1 className="text-lg sm:text-2xl font-bold">Incendios en Patagonia</h1>
+          </div>
+          <button
+            className="btn-primary flex items-center gap-2"
+            onClick={refresh}
+          >
+            Actualizar
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        <aside className="w-80 lg:w-96 p-4 bg-white shadow-lg overflow-y-auto flex-shrink-0 z-10">
+          <div className="p-4 space-y-6">
+            <FilterPanel
+              initialFilters={activeFilters}
+              availableSatellites={availableSatellites}
+              onFilterChange={handleFilterChange}
+              onResetFilters={handleResetFiltersApp}
+              totalFires={fires?.length || 0}
+              filteredFires={filteredFires.length}
+              isLoading={loading}
+            />
+
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+              <h3 className="font-medium text-gray-800 mb-3">Estadísticas</h3>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-500">Total Incendios</p>
+                  <p className="text-xl font-bold">{stats.totalFires}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-500">Alta Confianza</p>
+                  <p className="text-xl font-bold">{stats.highConfidence}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-500">Brillo Promedio</p>
+                  <p className="text-xl font-bold">{stats.averageBrightness.toFixed(1)} K</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-500">Satélites</p>
+                  <p className="text-xl font-bold">{stats.satellites.length}</p>
+                </div>
+              </div>
+              
+              {/* Gráfico de evolución temporal */}
+              <div className="mt-6">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Evolución Temporal</h4>
+                <FiresChart 
+                  fires={filteredFires}
+                  type="line"
+                  title="Incendios por Fecha"
+                />
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main className="flex-1 relative min-w-0">
+          <MapComponent
+            fires={filteredFires}
+            onMarkerClick={setSelectedFire}
+            loading={loading}
+          />
+          {selectedFire && (
+            <div className="absolute bottom-4 left-4 right-4 md:right-auto md:max-w-sm bg-white p-4 rounded-lg shadow-lg z-10">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-gray-900">Detalles del Incendio</h3>
+                  <p className="text-sm text-gray-500">
+                    Lat: {selectedFire.latitude.toFixed(4)}, Lng: {selectedFire.longitude.toFixed(4)}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Confianza: <span className="capitalize">{selectedFire.confidence}</span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Brillo: {selectedFire.brightness} K
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Satélite: {selectedFire.satellite}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Fecha: {format(new Date(selectedFire.date), 'dd/MM/yyyy HH:mm', { locale: es })}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedFire(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                  aria-label="Cerrar detalles"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+export default App;
