@@ -43,7 +43,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const [maxBrightness, setMaxBrightness] = useState<number | null>(initialFilters.maxBrightness || null);
   const [selectedConfidenceLevels, setSelectedConfidenceLevels] = useState<string[]>(initialFilters.confidenceLevels || []);
   const [selectedSatellite, setSelectedSatellite] = useState<string | null>(initialFilters.satellite || null);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Efecto para actualizar estados
   useEffect(() => {

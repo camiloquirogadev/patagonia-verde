@@ -26,6 +26,25 @@ const MapComponent = ({ fires, onMarkerClick, loading = false }: MapComponentPro
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const markersLayer = useRef<L.LayerGroup | null>(null);
+  const baseLayer = useRef<L.TileLayer | null>(null);
+
+  // Configuración de diferentes proveedores de mapas
+  const mapProviders = {
+    carto: {
+      url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd'
+    },
+    cartoDark: {
+      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd'
+    },
+    satellite: {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; <a href="https://www.esri.com/">Esri</a>, Maxar, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
+    }
+  };
 
   // Configuración inicial del mapa base
   useEffect(() => {
@@ -34,9 +53,11 @@ const MapComponent = ({ fires, onMarkerClick, loading = false }: MapComponentPro
     // Crear instancia de mapa centrada en Patagonia
     map.current = L.map(mapContainer.current).setView([-45.5, -71.3], 6);
 
-    // Añadir capa base de OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+    // Usar CartoDB Light - mapa neutral que respeta fronteras reconocidas internacionalmente
+    baseLayer.current = L.tileLayer(mapProviders.carto.url, {
+      attribution: mapProviders.carto.attribution,
+      subdomains: mapProviders.carto.subdomains,
+      maxZoom: 20
     }).addTo(map.current);
 
     // Inicializar capa de marcadores para mejor gestión
@@ -148,8 +169,33 @@ const MapComponent = ({ fires, onMarkerClick, loading = false }: MapComponentPro
         </div>
       )}
 
-      {/* Leyenda explicativa */}
-      <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg z-10">
+      {/* Selector de capas de mapa */}
+      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg z-20">
+        <div className="p-2">
+          <select 
+            className="text-sm border-none bg-transparent focus:outline-none cursor-pointer"
+            onChange={(e) => {
+              if (map.current && baseLayer.current) {
+                map.current.removeLayer(baseLayer.current);
+                const provider = mapProviders[e.target.value as keyof typeof mapProviders];
+                baseLayer.current = L.tileLayer(provider.url, {
+                  attribution: provider.attribution,
+                  subdomains: 'subdomains' in provider ? provider.subdomains : undefined,
+                  maxZoom: 20
+                }).addTo(map.current);
+              }
+            }}
+            defaultValue="carto"
+          >
+            <option value="carto">Mapa Claro</option>
+            <option value="cartoDark">Mapa Oscuro</option>
+            <option value="satellite">Satélite</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Leyenda explicativa - Siempre visible */}
+      <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg z-20">
         <h4 className="text-sm font-medium text-gray-800 mb-2">Nivel de Confianza</h4>
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -164,6 +210,10 @@ const MapComponent = ({ fires, onMarkerClick, loading = false }: MapComponentPro
             <div className="w-3 h-3 rounded-full bg-yellow-200"></div>
             <span className="text-xs text-gray-600">Bajo</span>
           </div>
+        </div>
+        <div className="mt-2 pt-2 border-t border-gray-200">
+          <p className="text-xs text-gray-500">Región de Patagonia</p>
+          <p className="text-xs text-gray-500">Incluye Malvinas Argentinas</p>
         </div>
       </div>
     </div>

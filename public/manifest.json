@@ -1,0 +1,28 @@
+{
+  "name": "Patagonia Verde - Monitoreo de Incendios",
+  "short_name": "Patagonia Verde",
+  "description": "Sistema de monitoreo de incendios forestales en tiempo real en la Patagonia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1f2937",
+  "theme_color": "#059669",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["utilities", "productivity", "navigation"],
+  "lang": "es",
+  "dir": "ltr"
+}

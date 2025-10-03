@@ -12,18 +12,19 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     minify: 'esbuild',
+    target: 'esnext',
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
           charts: ['chart.js', 'react-chartjs-2'],
           maps: ['leaflet'],
-          utils: ['date-fns', 'axios']
+          utils: ['date-fns']
         }
       }
     }
   },
   optimizeDeps: {
-    include: ['leaflet', 'chart.js', 'react-chartjs-2']
+    include: ['leaflet', 'chart.js', 'react-chartjs-2', 'date-fns']
   }
 })

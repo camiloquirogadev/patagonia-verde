@@ -38,13 +38,30 @@ build/
 *.sln
 *.sw?
 
-# Environment variables
+# Environment variables - CRÍTICO
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 .env.*.local
+*.env
+.env.*
+
+# API Keys y Secrets - SEGURIDAD
+config/secrets.json
+config/keys.json
+secrets/
+keys/
+*.pem
+*.p12
+*.key
+*.crt
+*.csr
+
+# Deployment configs con datos sensibles
+deploy-config.json
+deployment-secrets.yml
 
 # Vercel
 .vercel
@@ -93,3 +110,15 @@ yarn-error.log*
 # Storybook build outputs
 .out
 .storybook-out
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.swp
+*.swo
+*~
+
+# Local development
+.history/

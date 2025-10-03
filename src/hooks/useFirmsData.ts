@@ -44,15 +44,46 @@ export const useFirmsData = (): UseFirmsDataReturn => {
       console.log('Ejemplo de registro:', firesData[0]);
       
       // Normalizar y validar cada punto de incendio
-      const validatedData = firesData.map((fire, index) => ({
-        id: fire.id || `fire-${index}-${Date.now()}`,
-        latitude: typeof fire.latitude === 'number' ? fire.latitude : parseFloat(String(fire.latitude)) || 0,
-        longitude: typeof fire.longitude === 'number' ? fire.longitude : parseFloat(String(fire.longitude)) || 0,
-        brightness: typeof fire.brightness === 'number' ? fire.brightness : parseFloat(String(fire.brightness)) || 0,
-        date: fire.date || new Date().toISOString(),
-        confidence: (fire.confidence || 'medium') as FirePoint['confidence'],
-        satellite: fire.satellite || 'Desconocido'
-      }));
+      const validatedData = firesData.map((fire, index) => {
+        // Validación de coordenadas
+        const lat = typeof fire.latitude === 'number' ? fire.latitude : parseFloat(String(fire.latitude));
+        const lng = typeof fire.longitude === 'number' ? fire.longitude : parseFloat(String(fire.longitude));
+        
+        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          console.warn(`Coordenadas inválidas para incendio ${fire.id}:`, { lat, lng });
+          return null;
+        }
+
+        // Validación de brillo
+        const brightness = typeof fire.brightness === 'number' ? fire.brightness : parseFloat(String(fire.brightness));
+        if (isNaN(brightness) || brightness < 0) {
+          console.warn(`Brillo inválido para incendio ${fire.id}:`, brightness);
+          return null;
+        }
+
+        // Validación de confianza
+        const validConfidences: FirePoint['confidence'][] = ['high', 'medium', 'low'];
+        const confidence = validConfidences.includes(fire.confidence) ? fire.confidence : 'medium';
+
+        // Validación de fecha
+        const date = fire.date || new Date().toISOString();
+        try {
+          new Date(date).toISOString();
+        } catch {
+          console.warn(`Fecha inválida para incendio ${fire.id}:`, fire.date);
+          return null;
+        }
+
+        return {
+          id: fire.id || `fire-${index}-${Date.now()}`,
+          latitude: lat,
+          longitude: lng,
+          brightness: brightness,
+          date: date,
+          confidence: confidence,
+          satellite: typeof fire.satellite === 'string' ? fire.satellite.trim() : 'Desconocido'
+        };
+      }).filter(Boolean) as FirePoint[];
       
       setData(validatedData);
       
