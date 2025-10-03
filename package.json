@@ -1,8 +1,26 @@
 {
-  "name": "patagonia",
+  "name": "patagonia-verde",
+  "description": "Sistema de monitoreo de incendios forestales en la Patagonia",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "author": "Camilo Quiroga <camiloquirogadev@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/camiloquirogadev/patagonia-verde.git"
+  },
+  "keywords": [
+    "incendios",
+    "patagonia",
+    "monitoreo",
+    "fires",
+    "monitoring",
+    "react",
+    "typescript",
+    "leaflet",
+    "charts"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -12,8 +30,8 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "prepare": "husky install",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "npm run build && vercel --prod"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.5",

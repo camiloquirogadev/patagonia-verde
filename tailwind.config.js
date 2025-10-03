@@ -20,6 +20,12 @@ export default {
         danger: '#f03b20',
         warning: '#feb24c',
         info: '#51bbd6',
+        fire: {
+          orange: '#ea580c',
+          'orange-light': 'rgba(234, 88, 12, 0.2)',
+          'orange-medium': 'rgba(234, 88, 12, 0.5)',
+          'orange-dark': 'rgba(234, 88, 12, 0.7)',
+        }
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -28,6 +34,13 @@ export default {
         'card': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
         'card-hover': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
       },
+      screens: {
+        'xs': '475px',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+      }
     },
   },
   darkMode: 'class',

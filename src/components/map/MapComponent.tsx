@@ -1,10 +1,11 @@
-// src/components/Map/MapComponent.tsx
-import { useEffect, useRef, useCallback } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+/**
+ * Componente de mapa interactivo para visualizar incendios forestales
+ * Utiliza Leaflet para renderizar mapas y marcadores personalizados
+ */
+import { useEffect, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import type { FirePoint } from '../../types/fire';
-
-import { getMapboxToken } from '../../services/api';
 
 interface MapComponentProps {
   fires: FirePoint[];
@@ -12,235 +13,159 @@ interface MapComponentProps {
   loading?: boolean;
 }
 
+// Configuración de iconos para compatibilidad con bundlers modernos
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
+
 const MapComponent = ({ fires, onMarkerClick, loading = false }: MapComponentProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const sourceLoaded = useRef<boolean>(false);
+  const map = useRef<L.Map | null>(null);
+  const markersLayer = useRef<L.LayerGroup | null>(null);
 
-  // Actualizar datos de incendios
-  const updateFiresData = useCallback(() => {
-    if (!map.current || !sourceLoaded.current) return;
-
-    const source = map.current.getSource('fires') as mapboxgl.GeoJSONSource;
-    if (!source) return;
-
-    source.setData({
-      type: 'FeatureCollection',
-      features: fires.map(fire => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [fire.longitude, fire.latitude]
-        },
-        properties: {
-          id: fire.id,
-          brightness: fire.brightness,
-          confidence: fire.confidence
-        }
-      }))
-    });
-  }, [fires]);
-
-  // Inicializar el mapa
+  // Configuración inicial del mapa base
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    const initializeMap = async () => {
-      try {
-        const token = await getMapboxToken();
-        mapboxgl.accessToken = token;
+    // Crear instancia de mapa centrada en Patagonia
+    map.current = L.map(mapContainer.current).setView([-45.5, -71.3], 6);
 
-        map.current = new mapboxgl.Map({
-          container: mapContainer.current!,
-          style: 'mapbox://styles/mapbox/satellite-streets-v12',
-          center: [-71.3, -45.5],
-          zoom: 4.5,
-        });
+    // Añadir capa base de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map.current);
 
-        // Agregar controles
-        map.current.addControl(new mapboxgl.NavigationControl());
-        
-        // Configurar clustering cuando el mapa esté listo
-        map.current.on('load', () => {
-          if (!map.current) return;
-
-          // Agregar fuente de datos
-          map.current.addSource('fires', {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: []
-            },
-            cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 50
-          });
-
-          // Estilos para los clusters
-          map.current.addLayer({
-            id: 'clusters',
-            type: 'circle',
-            source: 'fires',
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#51bbd6',   // 0-99
-                100,
-                '#f1f075',   // 100-999
-                1000,
-                '#f28cb1'    // 1000+
-              ],
-              'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                20,    // 0-99
-                100,
-                30,    // 100-999
-                1000,
-                40     // 1000+
-              ]
-            }
-          });
-
-          // Estilos para el contador de clusters
-          map.current.addLayer({
-            id: 'cluster-count',
-            type: 'symbol',
-            source: 'fires',
-            filter: ['has', 'point_count'],
-            layout: {
-              'text-field': '{point_count_abbreviated}',
-              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-              'text-size': 12
-            }
-          });
-
-          // Estilos para los puntos individuales
-          map.current.addLayer({
-            id: 'unclustered-point',
-            type: 'circle',
-            source: 'fires',
-            filter: ['!', ['has', 'point_count']],
-            paint: {
-              'circle-color': [
-                'match',
-                ['get', 'confidence'],
-                'high', '#f03b20',
-                'medium', '#feb24c',
-                /* default */ '#ffeda0'
-              ],
-              'circle-radius': [
-                'interpolate',
-                ['linear'],
-                ['get', 'brightness'],
-                0, 4,
-                500, 10
-              ],
-              'circle-stroke-width': 1,
-              'circle-stroke-color': '#fff'
-            }
-          });
-
-          // Manejar clics en los clusters
-          map.current.on('click', 'clusters', (e) => {
-            if (!map.current) return;
-            
-            const features = map.current.queryRenderedFeatures(e.point, {
-              layers: ['clusters']
-            });
-            
-            const clusterId = features[0].properties?.cluster_id;
-            const source = map.current.getSource('fires') as mapboxgl.GeoJSONSource;
-            
-            source.getClusterExpansionZoom(
-              clusterId,
-              (err, zoom) => {
-                if (err || !map.current) return;
-                
-                const coordinates = (features[0].geometry as any).coordinates;
-                map.current.easeTo({
-                  center: coordinates,
-                  zoom: zoom ?? undefined
-                });
-              }
-            );
-          });
-          
-          // Manejar clics en los puntos individuales
-          map.current.on('click', 'unclustered-point', (e) => {
-            if (!map.current) return;
-            
-            const coordinates = (e.features?.[0].geometry as any).coordinates.slice();
-            const properties = e.features?.[0].properties;
-            
-            const fire = fires.find(f => 
-              f.longitude === coordinates[0] && 
-              f.latitude === coordinates[1] &&
-              f.confidence === properties?.confidence
-            );
-            
-            if (fire && onMarkerClick) {
-              onMarkerClick(fire);
-            }
-          });
-
-          // Cambiar el cursor al pasar sobre los clusters/puntos
-          map.current.on('mouseenter', ['clusters', 'unclustered-point'], () => {
-            if (map.current) {
-              map.current.getCanvas().style.cursor = 'pointer';
-            }
-          });
-
-          map.current.on('mouseleave', ['clusters', 'unclustered-point'], () => {
-            if (map.current) {
-              map.current.getCanvas().style.cursor = '';
-            }
-          });
-
-          sourceLoaded.current = true;
-          updateFiresData(); // Cargar datos iniciales
-        });
-
-      } catch (error) {
-        console.error('Error al inicializar el mapa:', error);
-      }
-    };
-
-    initializeMap();
+    // Inicializar capa de marcadores para mejor gestión
+    markersLayer.current = L.layerGroup().addTo(map.current);
 
     return () => {
       if (map.current) {
         map.current.remove();
         map.current = null;
       }
-      sourceLoaded.current = false;
     };
   }, []);
 
-  // Actualizar datos cuando cambien los incendios
+  // Renderizar marcadores cuando los datos cambien
   useEffect(() => {
-    updateFiresData();
-  }, [fires, updateFiresData]);
+    if (!map.current || !markersLayer.current) return;
+
+    // Limpiar marcadores previos
+    markersLayer.current.clearLayers();
+
+    // Crear marcadores para cada punto de incendio
+    fires.forEach(fire => {
+      if (!markersLayer.current) return;
+
+      // Función para determinar color según nivel de confianza
+      const getColor = (confidence: string) => {
+        switch (confidence) {
+          case 'high': return '#f03b20';    // Rojo intenso
+          case 'medium': return '#feb24c';  // Naranja
+          case 'low': return '#ffeda0';     // Amarillo claro
+          default: return '#999';           // Gris por defecto
+        }
+      };
+
+      const color = getColor(fire.confidence);
+      
+      // Crear marcador circular con tamaño basado en brillo
+      const marker = L.circleMarker([fire.latitude, fire.longitude], {
+        radius: Math.max(5, Math.min(15, fire.brightness / 30)), // Radio proporcional al brillo
+        fillColor: color,
+        color: '#fff',      // Borde blanco
+        weight: 2,          // Grosor del borde
+        opacity: 1,
+        fillOpacity: 0.8
+      });
+
+      // Crear popup informativo para cada marcador
+      marker.bindPopup(`
+        <div style="font-family: sans-serif;">
+          <h3 style="margin: 0 0 8px 0; color: #333;">Incendio Detectado</h3>
+          <p style="margin: 4px 0;"><strong>Coordenadas:</strong> ${fire.latitude.toFixed(4)}, ${fire.longitude.toFixed(4)}</p>
+          <p style="margin: 4px 0;"><strong>Confianza:</strong> <span style="text-transform: capitalize;">${fire.confidence}</span></p>
+          <p style="margin: 4px 0;"><strong>Brillo:</strong> ${fire.brightness} K</p>
+          <p style="margin: 4px 0;"><strong>Satélite:</strong> ${fire.satellite}</p>
+          <p style="margin: 4px 0;"><strong>Fecha:</strong> ${new Date(fire.date).toLocaleDateString('es-ES')}</p>
+        </div>
+      `);
+
+      // Configurar eventos de interacción
+      marker.on('click', () => {
+        if (onMarkerClick) {
+          onMarkerClick(fire);
+        }
+      });
+
+      markersLayer.current.addLayer(marker);
+    });
+
+    // Ajustar vista automáticamente cuando hay datos
+    if (fires.length > 0) {
+      const group = new L.featureGroup(markersLayer.current.getLayers());
+      map.current.fitBounds(group.getBounds().pad(0.1));
+    }
+
+  }, [fires, onMarkerClick]);
 
   return (
-    <div 
-      ref={mapContainer} 
-      className="w-full h-full relative"
-      role="application"
-      aria-label="Mapa de incendios"
-    >
+    <div className="relative w-full h-full">
+      <div 
+        ref={mapContainer} 
+        className="w-full h-full"
+        style={{ minHeight: '400px' }}
+      />
+      
+      {/* Overlay de carga */}
       {loading && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-          <div className="text-white text-lg">Cargando datos...</div>
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-gray-700">Cargando mapa...</span>
+            </div>
+          </div>
         </div>
       )}
+      
+      {/* Mensaje cuando no hay datos */}
       {!loading && fires.length === 0 && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-          <div className="text-white text-lg">No hay datos de incendios para mostrar</div>
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="text-gray-600 mb-2">
+              <svg className="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No hay incendios para mostrar</h3>
+            <p className="text-gray-600">Ajusta los filtros para ver más datos</p>
+          </div>
         </div>
       )}
+
+      {/* Leyenda explicativa */}
+      <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg z-10">
+        <h4 className="text-sm font-medium text-gray-800 mb-2">Nivel de Confianza</h4>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-600"></div>
+            <span className="text-xs text-gray-600">Alto</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-orange-400"></div>
+            <span className="text-xs text-gray-600">Medio</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-yellow-200"></div>
+            <span className="text-xs text-gray-600">Bajo</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

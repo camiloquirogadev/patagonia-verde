@@ -1,3 +1,7 @@
+/**
+ * Aplicación principal Patagonia Verde
+ * Dashboard para monitoreo de incendios forestales en tiempo real
+ */
 import './App.css';
 import { useState, useMemo, useCallback } from 'react';
 import { useFirmsData, type FirePoint } from './hooks/useFirmsData';
@@ -6,10 +10,11 @@ import { format, parseISO, isAfter, isBefore, startOfDay, endOfDay } from 'date-
 import { es } from 'date-fns/locale';
 import MapComponent from './components/map/MapComponent';
 import FilterPanel, { type FilterCriteria } from './components/filters/FilterPanel';
-import FiresChart from './components/dashboard/FiresChart'; // Import FiresChart component
+import FiresChart from './components/dashboard/FiresChart';
 
 const APP_VERSION = '1.0.0';
 
+// Interfaz para estadísticas calculadas de incendios
 interface Stats {
   totalFires: number;
   highConfidence: number;
@@ -18,11 +23,12 @@ interface Stats {
   dateRange: { start?: string | null; end?: string | null };
 }
 
+// Configuración inicial de filtros (últimos 14 días)
 const initialFilterValues: FilterCriteria = {
-  startDate: format(new Date(new Date().setDate(new Date().getDate() - 7)), 'yyyy-MM-dd'),
+  startDate: format(new Date(new Date().setDate(new Date().getDate() - 14)), 'yyyy-MM-dd'),
   endDate: format(new Date(), 'yyyy-MM-dd'),
-  minBrightness: 300,
-  maxBrightness: 500,
+  minBrightness: 250,
+  maxBrightness: 600,
   confidenceLevels: [],
   satellite: null,
 };
@@ -137,7 +143,7 @@ function App() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-gray-50" data-version={APP_VERSION}>
       <header className="bg-green-800 text-white p-4 shadow-md">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
               <span className="text-green-800 text-xl">🔥</span>
@@ -145,17 +151,20 @@ function App() {
             <h1 className="text-lg sm:text-2xl font-bold">Incendios en Patagonia</h1>
           </div>
           <button
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
             onClick={refresh}
           >
-            Actualizar
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span className="hidden sm:inline">Actualizar</span>
           </button>
         </div>
       </header>
 
-      <div className="flex flex-1 min-h-0 overflow-hidden">
-        <aside className="w-80 lg:w-96 p-4 bg-white shadow-lg overflow-y-auto flex-shrink-0 z-10">
-          <div className="p-4 space-y-6">
+      <div className="flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden">
+        <aside className="w-full lg:w-80 xl:w-96 p-4 bg-gray-900 shadow-lg overflow-y-auto flex-shrink-0 z-10 border-r border-gray-700">
+          <div className="space-y-6">
             <FilterPanel
               initialFilters={activeFilters}
               availableSatellites={availableSatellites}
@@ -166,30 +175,30 @@ function App() {
               isLoading={loading}
             />
 
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="font-medium text-gray-800 mb-3">Estadísticas</h3>
+            <div className="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
+              <h3 className="font-medium text-white mb-4">Estadísticas</h3>
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-500">Total Incendios</p>
-                  <p className="text-xl font-bold">{stats.totalFires}</p>
+                <div className="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                  <p className="text-sm text-gray-300">Total Incendios</p>
+                  <p className="text-xl font-bold text-green-400">{stats.totalFires}</p>
                 </div>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-500">Alta Confianza</p>
-                  <p className="text-xl font-bold">{stats.highConfidence}</p>
+                <div className="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                  <p className="text-sm text-gray-300">Alta Confianza</p>
+                  <p className="text-xl font-bold text-red-400">{stats.highConfidence}</p>
                 </div>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-500">Brillo Promedio</p>
-                  <p className="text-xl font-bold">{stats.averageBrightness.toFixed(1)} K</p>
+                <div className="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                  <p className="text-sm text-gray-300">Brillo Promedio</p>
+                  <p className="text-xl font-bold text-orange-400">{stats.averageBrightness.toFixed(1)} K</p>
                 </div>
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-500">Satélites</p>
-                  <p className="text-xl font-bold">{stats.satellites.length}</p>
+                <div className="bg-gray-700 p-3 rounded-lg border border-gray-600">
+                  <p className="text-sm text-gray-300">Satélites</p>
+                  <p className="text-xl font-bold text-blue-400">{stats.satellites.length}</p>
                 </div>
               </div>
               
               {/* Gráfico de evolución temporal */}
               <div className="mt-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Evolución Temporal</h4>
+                <h4 className="text-sm font-medium text-gray-300 mb-3">Evolución Temporal</h4>
                 <FiresChart 
                   fires={filteredFires}
                   type="line"
@@ -207,29 +216,31 @@ function App() {
             loading={loading}
           />
           {selectedFire && (
-            <div className="absolute bottom-4 left-4 right-4 md:right-auto md:max-w-sm bg-white p-4 rounded-lg shadow-lg z-10">
+            <div className="absolute bottom-4 left-4 right-4 lg:right-auto lg:max-w-sm bg-white p-4 rounded-lg shadow-lg z-10">
               <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-bold text-gray-900">Detalles del Incendio</h3>
-                  <p className="text-sm text-gray-500">
-                    Lat: {selectedFire.latitude.toFixed(4)}, Lng: {selectedFire.longitude.toFixed(4)}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Confianza: <span className="capitalize">{selectedFire.confidence}</span>
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Brillo: {selectedFire.brightness} K
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Satélite: {selectedFire.satellite}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Fecha: {format(new Date(selectedFire.date), 'dd/MM/yyyy HH:mm', { locale: es })}
-                  </p>
+                <div className="flex-1 pr-4">
+                  <h3 className="font-bold text-gray-900 mb-2">Detalles del Incendio</h3>
+                  <div className="space-y-1 text-sm">
+                    <p className="text-gray-600">
+                      <span className="font-medium">Ubicación:</span> {selectedFire.latitude.toFixed(4)}, {selectedFire.longitude.toFixed(4)}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-medium">Confianza:</span> <span className="capitalize">{selectedFire.confidence}</span>
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-medium">Brillo:</span> {selectedFire.brightness} K
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-medium">Satélite:</span> {selectedFire.satellite}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-medium">Fecha:</span> {format(new Date(selectedFire.date), 'dd/MM/yyyy HH:mm', { locale: es })}
+                    </p>
+                  </div>
                 </div>
                 <button
                   onClick={() => setSelectedFire(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="flex-shrink-0 text-gray-400 hover:text-gray-600 p-1"
                   aria-label="Cerrar detalles"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

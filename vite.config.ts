@@ -7,5 +7,23 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          charts: ['chart.js', 'react-chartjs-2'],
+          maps: ['leaflet'],
+          utils: ['date-fns', 'axios']
+        }
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['leaflet', 'chart.js', 'react-chartjs-2']
   }
 })

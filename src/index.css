@@ -30,49 +30,21 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-colors
-           focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply px-4 py-3 rounded-lg font-medium transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply bg-primary hover:bg-primary-dark text-white
-           focus:ring-primary/50;
+    @apply btn bg-green-600 hover:bg-green-700 text-white
+           focus:ring-green-500/50 border-0;
   }
 
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary-dark text-white
-           focus:ring-secondary/50;
+    @apply btn bg-gray-600 hover:bg-gray-700 text-white
+           focus:ring-gray-500/50 border-0;
   }
 
-  .filter-panel {
-    @apply p-4 bg-gray-800 text-white rounded-lg shadow-lg;
-  }
-
-  .filter-section {
-    @apply space-y-2;
-  }
-
-  .filter-header {
-    @apply text-sm font-medium text-gray-300 mb-2;
-  }
-
-  .filter-input {
-    @apply w-full p-2 bg-gray-700 border border-gray-600 rounded-md 
-           focus:ring-2 focus:ring-blue-500 focus:border-transparent
-           placeholder-gray-500 text-white;
-  }
-
-  .confidence-button {
-    @apply px-3 py-2 bg-gray-700 border border-gray-600 rounded-md
-           text-sm text-gray-300 transition-colors duration-150
-           hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500;
-  }
-
-  .confidence-button-active {
-    @apply bg-blue-600 border-blue-500 text-white
-           hover:bg-blue-700;
-  }
-  
   /* Estilos para el componente FiresChart */
   .chart-container {
     @apply h-64 w-full bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-700
@@ -80,8 +52,8 @@
   }
   
   .chart-container-empty {
-    @apply flex items-center justify-center text-gray-500 italic
-           bg-gray-800/50 border border-dashed border-gray-700;
+    @apply flex items-center justify-center text-gray-400 italic
+           bg-gray-800/50 border border-dashed border-gray-600;
   }
   
   .dashboard-grid {
@@ -91,7 +63,8 @@
   
   .dashboard-card {
     @apply bg-gray-800 rounded-lg shadow-lg overflow-hidden
-           transition-transform duration-300 hover:scale-[1.01];
+           transition-transform duration-300 hover:scale-[1.01]
+           border border-gray-700;
   }
   
   .dashboard-card-header {
@@ -127,17 +100,68 @@ body {
 /* Media queries para responsividad */
 @media (max-width: 640px) {
   .chart-container {
-    @apply h-52;
+    @apply h-48 p-3;
   }
   
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .filter-panel {
+    @apply p-3;
+  }
+  
+  .btn {
+    @apply px-3 py-2 text-sm;
+  }
+  
+  .filter-input {
+    @apply p-2 text-sm;
+  }
+  
+  .confidence-button {
+    @apply px-2 py-1 text-xs;
+  }
+  
+  /* Layout móvil para el panel lateral */
+  .mobile-panel {
+    @apply fixed inset-x-0 bottom-0 max-h-96 z-50
+           transform transition-transform duration-300;
+  }
+  
+  .mobile-panel.collapsed {
+    @apply translate-y-80;
   }
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .chart-container {
+    @apply h-56;
+  }
+}
+
+@media (min-width: 1025px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+/* Mejoras adicionales para touch devices */
+@media (pointer: coarse) {
+  .btn {
+    @apply min-h-[44px];
+  }
+  
+  .confidence-button {
+    @apply min-h-[40px];
+  }
+  
+  .filter-input {
+    @apply min-h-[44px];
   }
 }
 

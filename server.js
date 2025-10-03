@@ -1,29 +1,32 @@
-// server.js - Versión simplificada compatible con ES modules
+/**
+ * Servidor de desarrollo para la aplicación Patagonia Verde
+ * Proporciona endpoints de API para datos de incendios forestales
+ */
 import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Obtener __dirname en ES modules
+// Configuración de rutas para ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Inicializar Express
+// Configuración del servidor
 const app = express();
 const PORT = 3000;
 
-// Middleware básico
+// Configuración de middleware
 app.use(cors());
 app.use(express.json());
 
-// Middleware de logging
+// Registro de peticiones HTTP
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
-// Ruta de estado del servidor
+// Endpoint de salud del servidor
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -31,7 +34,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Datos de ejemplo para incendios
+// Datos de muestra para desarrollo y testing
 const sampleFires = {
   "fires": [
     {
@@ -61,14 +64,14 @@ const sampleFires = {
   ]
 };
 
-// Ruta para los datos de incendios
+// Endpoint principal para datos de incendios
 app.get('/api/fires', (req, res) => {
-  // Devolver datos de ejemplo directamente
+  // Retorna datos de ejemplo en formato compatible con FIRMS
   res.json(sampleFires);
 });
 
-// Iniciar el servidor
+// Inicialización del servidor
 app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-  console.log(`Datos de incendios: http://localhost:${PORT}/api/fires`);
+  console.log(`API de incendios: http://localhost:${PORT}/api/fires`);
 });
