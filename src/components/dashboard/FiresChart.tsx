@@ -1,7 +1,24 @@
 /**
- * Componente de visualización temporal para análisis de incendios forestales
- * 
- * Implementa gráficos interactivos para el análisis de series temporales
+ * Componente de visualización temporal para análisis de incendios forestales    // Agrupar incendios por fecha y confianza
+    const groupedFires = fires.reduce((acc, fire) => {
+      if (!fire.date || !isValid(parseISO(fire.date))) return acc;
+      
+      const date = format(parseISO(fire.date), 'yyyy-MM-dd');
+      if (!acc[date]) {
+        acc[date] = { total: 0, high: 0, medium: 0, low: 0 };
+      }
+      acc[date].total += 1;
+      acc[date][fire.confidence] += 1;
+      return acc;
+    }, {} as Record<string, { total: number; high: number; medium: number; low: number }>);
+
+    // Ordenar fechas
+    const sortedDates = Object.keys(groupedFires).sort((a, b) => {
+      return new Date(a).getTime() - new Date(b).getTime();
+    });
+
+    // Convertir fechas a formato de visualización
+    const displayDates = sortedDates.map(date => format(parseISO(date), 'dd/MM/yyyy'));a gráficos interactivos para el análisis de series temporales
  * de detecciones satelitales de incendios. Incluye análisis estadístico
  * de tendencias, detección de anomalías y métricas de actividad.
  * 
@@ -100,6 +117,9 @@ const FiresChart: React.FC<FiresChartProps> = ({
       return dateA.getTime() - dateB.getTime();
     });
 
+    // Convertir fechas a formato de visualización (ya están en formato correcto)
+    const displayDates = sortedDates;
+
     const values = sortedDates.map(date => groupedFires[date].total);
     const highConfidenceValues = sortedDates.map(date => groupedFires[date].high);
     const mediumConfidenceValues = sortedDates.map(date => groupedFires[date].medium);
@@ -109,7 +129,7 @@ const FiresChart: React.FC<FiresChartProps> = ({
     const averageDaily = values.reduce((sum, val) => sum + val, 0) / totalDays;
     const maxDaily = Math.max(...values);
     const peakIndex = values.indexOf(maxDaily);
-    const peakDate = sortedDates[peakIndex];
+    const peakDate = displayDates[peakIndex];
 
     // Calcular tendencia (últimos 3 días vs primeros 3 días)
     const recent = values.slice(-3).reduce((sum, val) => sum + val, 0) / Math.min(3, values.length);
@@ -130,7 +150,7 @@ const FiresChart: React.FC<FiresChartProps> = ({
     else if (averageDaily > 2) activityLevel = 'moderate';
 
     return {
-      labels: sortedDates,
+      labels: displayDates,
       values,
       highConfidenceValues,
       mediumConfidenceValues,
