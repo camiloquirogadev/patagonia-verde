@@ -122,3 +122,99 @@ coverage/
 
 # Local development
 .history/
+
+# ===========================================
+# ARCHIVOS NO PROFESIONALES PARA REPOSITORIO
+# ===========================================
+
+# Archivos temporales de desarrollo
+*_temp.tsx
+*_temp.ts
+*_temp.js
+*_old.tsx
+*_old.ts
+*_old.js
+*_backup.tsx
+*_backup.ts
+*_backup.js
+*_test.tsx
+*_test.ts
+*_test.js
+*_draft.tsx
+*_draft.ts
+*_draft.js
+
+# Archivos de notas y borradores
+NOTES.md
+TODO.md
+SCRATCH.md
+notes.txt
+todo.txt
+scratch.txt
+*.draft
+*.note
+
+# Archivos de desarrollo personal
+dev-notes/
+personal-notes/
+.personal/
+.dev/
+OPTIMIZATIONS.md
+
+# Archivos de configuración local de desarrollo
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# Archivos de prueba y experimentos
+playground/
+experiments/
+sandbox/
+test-files/
+
+# Capturas de pantalla y assets temporales
+screenshots/
+temp-assets/
+*.temp.png
+*.temp.jpg
+*.temp.gif
+
+# Assets por defecto de frameworks (no profesionales)
+src/assets/react.svg
+public/vite.svg
+src/logo.svg
+public/logo192.png
+public/logo512.png
+src/assets/logo.*
+
+# Archivos de configuración de IDE específicos
+*.code-workspace
+.fleet/
+.nova/
+
+# Archivos de backup automático
+*.bak
+*.backup
+*~
+
+# IDE y editor
+.vscode/settings.json
+.vscode/launch.json  
+.vscode/tasks.json
+.fleet/
+.nova/
+*.code-workspace
+
+# Sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos temporales del sistema
+*.tmp
+*.temp
+~$*

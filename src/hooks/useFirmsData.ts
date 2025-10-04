@@ -1,99 +1,152 @@
 /**
- * Hook personalizado para gestionar datos de incendios forestales
- * Maneja la carga, estado y actualización de datos de incendios desde diferentes fuentes
+ * Hook optimizado para gestionar datos de incendios forestales NASA FIRMS
+ * 
+ * Custom hook que encapsula la lógica de obtención, validación y cache
+ * de datos satelitales de incendios forestales. Implementa buenas prácticas
+ * de desarrollo React con optimizaciones de rendimiento.
+ * 
+ * Características principales:
+ * - Cache en memoria con TTL para reducir requests redundantes
+ * - Validación robusta de datos geoespaciales
+ * - Memoización de estadísticas calculadas
+ * - Manejo de errores con fallbacks graceful
+ * 
+ * @author Camilo Quiroga - Desarrollador Full Stack & Geomática
+ * @version 1.0.0
+ * @since 2025-10-01
  */
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { FirePoint } from "../types/fire";
 import { staticFiresData } from "../data/static-fires";
-
-// Configuración de API - cambiar a servidor real cuando esté disponible
-// const API_BASE_URL = 'http://localhost:3000';
 
 interface UseFirmsDataReturn {
   fires: FirePoint[];
   loading: boolean;
   error: Error | null;
   refresh: () => Promise<void>;
+  stats: {
+    total: number;
+    highConfidence: number;
+    mediumConfidence: number;
+    lowConfidence: number;
+  };
 }
+
+// Cache simple para evitar reprocesamiento
+let cachedData: FirePoint[] | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
 export const useFirmsData = (): UseFirmsDataReturn => {
   const [data, setData] = useState<FirePoint[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Función principal para obtener datos de incendios
+  // Función de validación optimizada
+  const validateFirePoint = useCallback((fire: unknown, index: number): FirePoint | null => {
+    try {
+      // Type guard para validar estructura
+      if (!fire || typeof fire !== 'object') {
+        return null;
+      }
+
+      const fireObj = fire as Record<string, unknown>;
+
+      // Validación de coordenadas
+      const lat = Number(fireObj.latitude);
+      const lng = Number(fireObj.longitude);
+      
+      if (!Number.isFinite(lat) || !Number.isFinite(lng) || 
+          lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        return null;
+      }
+
+      // Validación de brillo
+      const brightness = Number(fireObj.brightness);
+      if (!Number.isFinite(brightness) || brightness < 0) {
+        return null;
+      }
+
+      // Validación de confianza
+      const validConfidences = ['high', 'medium', 'low'] as const;
+      const confidenceStr = fireObj.confidence as string;
+      const confidence = validConfidences.find(v => v === confidenceStr) || 'medium';
+
+      // Fecha con fallback
+      const date = typeof fireObj.date === 'string' ? fireObj.date : new Date().toISOString();
+
+      return {
+        id: typeof fireObj.id === 'string' ? fireObj.id : `fire-${index}-${Date.now()}`,
+        latitude: lat,
+        longitude: lng,
+        brightness: brightness,
+        date: date,
+        confidence: confidence,
+        satellite: typeof fireObj.satellite === 'string' ? fireObj.satellite.trim() : 'Desconocido'
+      };
+    } catch {
+      return null;
+    }
+  }, []);
+
+  // Función principal para obtener datos optimizada
   const fetchFires = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
       
-      console.log('Iniciando carga de datos de incendios');
+      // Verificar cache
+      const now = Date.now();
+      if (cachedData && (now - cacheTimestamp) < CACHE_DURATION) {
+        setData(cachedData);
+        setLoading(false);
+        return;
+      }
       
-      // Simular latencia de red para mejor UX
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Simular latencia solo en desarrollo
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
       
-      // Validar estructura de datos antes de procesar
-      if (!staticFiresData || !staticFiresData.fires || !Array.isArray(staticFiresData.fires)) {
+      // Validar estructura de datos
+      if (!staticFiresData?.fires || !Array.isArray(staticFiresData.fires)) {
         throw new Error('Estructura de datos inválida');
       }
       
-      // Extraer datos de incendios de la fuente estática
-      const firesData = staticFiresData.fires;
+      // Procesar datos de forma eficiente
+      const validatedData = staticFiresData.fires
+        .map(validateFirePoint)
+        .filter((fire): fire is FirePoint => fire !== null);
       
-      console.log('Datos cargados exitosamente:', firesData.length, 'registros');
-      console.log('Ejemplo de registro:', firesData[0]);
-      
-      // Normalizar y validar cada punto de incendio
-      const validatedData = firesData.map((fire, index) => {
-        // Validación de coordenadas
-        const lat = typeof fire.latitude === 'number' ? fire.latitude : parseFloat(String(fire.latitude));
-        const lng = typeof fire.longitude === 'number' ? fire.longitude : parseFloat(String(fire.longitude));
-        
-        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          console.warn(`Coordenadas inválidas para incendio ${fire.id}:`, { lat, lng });
-          return null;
-        }
-
-        // Validación de brillo
-        const brightness = typeof fire.brightness === 'number' ? fire.brightness : parseFloat(String(fire.brightness));
-        if (isNaN(brightness) || brightness < 0) {
-          console.warn(`Brillo inválido para incendio ${fire.id}:`, brightness);
-          return null;
-        }
-
-        // Validación de confianza
-        const validConfidences: FirePoint['confidence'][] = ['high', 'medium', 'low'];
-        const confidence = validConfidences.includes(fire.confidence) ? fire.confidence : 'medium';
-
-        // Validación de fecha
-        const date = fire.date || new Date().toISOString();
-        try {
-          new Date(date).toISOString();
-        } catch {
-          console.warn(`Fecha inválida para incendio ${fire.id}:`, fire.date);
-          return null;
-        }
-
-        return {
-          id: fire.id || `fire-${index}-${Date.now()}`,
-          latitude: lat,
-          longitude: lng,
-          brightness: brightness,
-          date: date,
-          confidence: confidence,
-          satellite: typeof fire.satellite === 'string' ? fire.satellite.trim() : 'Desconocido'
-        };
-      }).filter(Boolean) as FirePoint[];
+      // Actualizar cache
+      cachedData = validatedData;
+      cacheTimestamp = now;
       
       setData(validatedData);
       
     } catch (err) {
-      console.error('Error durante la carga de datos:', err);
-      setError(err instanceof Error ? err : new Error('Error al cargar datos de incendios'));
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar datos de incendios';
+      setError(new Error(errorMessage));
+      console.error('Error en useFirmsData:', err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [validateFirePoint]);
+
+  // Estadísticas memoizadas
+  const stats = useMemo(() => {
+    const total = data.length;
+    const highConfidence = data.filter(f => f.confidence === 'high').length;
+    const mediumConfidence = data.filter(f => f.confidence === 'medium').length;
+    const lowConfidence = data.filter(f => f.confidence === 'low').length;
+
+    return {
+      total,
+      highConfidence,
+      mediumConfidence,
+      lowConfidence
+    };
+  }, [data]);
 
   useEffect(() => {
     fetchFires();
@@ -103,8 +156,9 @@ export const useFirmsData = (): UseFirmsDataReturn => {
     fires: data, 
     loading, 
     error,
-    refresh: fetchFires 
+    refresh: fetchFires,
+    stats
   };
 };
 
-export type { FirePoint };
+export type { FirePoint, UseFirmsDataReturn };

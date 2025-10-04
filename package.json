@@ -1,25 +1,30 @@
 {
   "name": "patagonia-verde",
-  "description": "Sistema de monitoreo de incendios forestales en la Patagonia",
+  "description": "Sistema de monitoreo geoespacial de incendios forestales en la Patagonia argentina utilizando datos satelitales NASA FIRMS y tecnologías GIS/geomática",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "author": "Camilo Quiroga <camiloquirogadev@gmail.com>",
+  "author": "Camilo Quiroga <quirogacamilodev@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/camiloquirogadev/patagonia-verde.git"
   },
   "keywords": [
-    "incendios",
+    "fire-monitoring",
     "patagonia",
-    "monitoreo",
-    "fires",
-    "monitoring",
+    "geospatial",
+    "gis",
+    "geomatics",
+    "nasa-firms",
+    "forest-fires",
+    "satellite-data",
+    "environmental-monitoring",
     "react",
     "typescript",
     "leaflet",
-    "charts"
+    "charts",
+    "spatial-analysis"
   ],
   "scripts": {
     "dev": "vite",
