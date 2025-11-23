@@ -438,3 +438,4 @@ const FiresChart: React.FC<FiresChartProps> = ({
 };
 
 export default FiresChart;
+

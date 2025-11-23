@@ -57,7 +57,7 @@ function App() {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-xl shadow-xl max-w-md text-center">
-          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+          <div className="text-red-500 text-5xl mb-4 font-bold">ERROR</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Error de Conexión</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
@@ -146,7 +146,7 @@ function App() {
                 <div className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
                   <span className="text-xs sm:text-sm text-gray-600">Confianza</span>
                   <span className={`font-bold text-sm sm:text-base ${selectedFire.confidence === 'high' ? 'text-red-600' :
-                      selectedFire.confidence === 'medium' ? 'text-orange-600' : 'text-yellow-600'
+                    selectedFire.confidence === 'medium' ? 'text-orange-600' : 'text-yellow-600'
                     }`}>
                     {selectedFire.confidence === 'high' ? 'Alta' :
                       selectedFire.confidence === 'medium' ? 'Media' : 'Baja'}

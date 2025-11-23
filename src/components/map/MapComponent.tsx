@@ -21,7 +21,7 @@ const FirePopupContent = ({ fire, onMoreDetails }: { fire: FirePoint; onMoreDeta
     <div className="p-3 min-w-[250px] font-sans">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-md">
-          <span className="text-white text-lg">🔥</span>
+          <span className="text-white text-lg font-bold">FIRE</span>
         </div>
         <div>
           <h3 className="font-bold text-base text-gray-800">Incendio Detectado</h3>
@@ -92,9 +92,9 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
     satelliteMap.addTo(map);
 
     const baseMaps = {
-      "🛰️ Satelital": satelliteMap,
-      "🗺️ Calles": streetMap,
-      "🏔️ Topográfico": topoMap
+      "Satelital": satelliteMap,
+      "Calles": streetMap,
+      "Topográfico": topoMap
     };
 
     L.control.layers(baseMaps, {}, {
@@ -141,7 +141,7 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
           transition: 'all 0.2s ease',
           marginTop: '10px'
         });
-        container.innerHTML = '🎯';
+        container.innerHTML = '⊕';
         container.title = 'Centrar en Patagonia';
 
         container.onclick = function () {
@@ -174,7 +174,7 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
             transition: 'all 0.2s ease',
             marginTop: '10px'
           });
-          container.innerHTML = '📍';
+          container.innerHTML = '◉';
           container.title = 'Mi ubicación';
 
           container.onclick = function () {
@@ -187,13 +187,13 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
                   .addTo(map)
                   .bindPopup('Tu ubicación actual')
                   .openPopup();
-                container.innerHTML = '📍';
+                container.innerHTML = '◉';
               },
               (error) => {
                 console.error('Error getting location:', error);
-                container.innerHTML = '❌';
+                container.innerHTML = '✕';
                 setTimeout(() => {
-                  container.innerHTML = '📍';
+                  container.innerHTML = '◉';
                 }, 2000);
               }
             );
