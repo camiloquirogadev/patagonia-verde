@@ -6,6 +6,7 @@ import type { FirePoint } from '../../types/fire';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { getLocationName } from '../../utils/locationUtils';
+import { getConfidenceDetails } from '../../utils/fireUtils';
 
 interface MapComponentProps {
   fires: FirePoint[];
@@ -16,6 +17,7 @@ interface MapComponentProps {
 // Componente interno para el contenido del Popup
 const FirePopupContent = ({ fire, onMoreDetails }: { fire: FirePoint; onMoreDetails?: () => void }) => {
   const locationName = getLocationName(fire.latitude, fire.longitude);
+  const confidenceDetails = getConfidenceDetails(fire.confidence);
 
   return (
     <div className="p-3 min-w-[250px] font-sans">
@@ -36,8 +38,8 @@ const FirePopupContent = ({ fire, onMoreDetails }: { fire: FirePoint; onMoreDeta
         </div>
         <div className="bg-orange-50 p-2 rounded border border-orange-100">
           <div className="text-xs text-gray-500 uppercase">Confianza</div>
-          <div className="text-sm font-bold text-orange-600">
-            {fire.confidence === 'high' ? 'Alta' : fire.confidence === 'medium' ? 'Media' : 'Baja'}
+          <div className={`text-sm font-bold ${confidenceDetails.color}`}>
+            {confidenceDetails.text}
           </div>
         </div>
       </div>
@@ -225,18 +227,14 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
     markersLayer.clearLayers();
 
     const createFireIcon = (confidence: FirePoint['confidence']) => {
-      const colors = {
-        high: '#dc2626',
-        medium: '#ea580c',
-        low: '#facc15'
-      };
+      const details = getConfidenceDetails(confidence);
 
       return L.divIcon({
         className: 'fire-marker',
         html: `<div style="
           width: 20px; 
           height: 20px; 
-          background-color: ${colors[confidence]}; 
+          background-color: ${details.mapColor}; 
           border: 3px solid white; 
           border-radius: 50%; 
           box-shadow: 0 2px 6px rgba(0,0,0,0.4)

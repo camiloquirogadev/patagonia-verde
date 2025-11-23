@@ -1,18 +1,14 @@
 import React from 'react';
+import { useUI } from '../../context/UIContext';
 
 interface HeaderProps {
-    isMenuOpen: boolean;
-    setIsMenuOpen: (isOpen: boolean) => void;
-    setIsFiltersOpen: (isOpen: boolean) => void;
     refresh: () => Promise<void>;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-    isMenuOpen,
-    setIsMenuOpen,
-    setIsFiltersOpen,
     refresh
 }) => {
+    const { isMenuOpen, toggleMenu, setIsFiltersOpen } = useUI();
     return (
         <header className="bg-gray-900 text-white shadow-lg border-b border-gray-700 relative z-[1100]">
             <div className="flex justify-between items-center gap-2 sm:gap-4 p-3 sm:p-4">
@@ -34,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
                     {/* Menú desplegable de control - Solo desktop */}
                     <div className="menu-dropdown relative">
                         <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            onClick={toggleMenu}
                             className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-600 transition-all duration-200"
                         >
                             <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
                                     {/* Filtros Avanzados */}
                                     <button
                                         onClick={() => {
-                                            setIsMenuOpen(false);
+                                            toggleMenu();
                                             setIsFiltersOpen(true);
                                             // Scroll to filters
                                             document.querySelector('.filter-panel')?.scrollIntoView({ behavior: 'smooth' });
@@ -74,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
                                     {/* Monitor de Tiempo Real */}
                                     <button
                                         onClick={() => {
-                                            setIsMenuOpen(false);
+                                            toggleMenu();
                                             // Scroll to alerts
                                             document.querySelector('.monitor-satelital')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
@@ -94,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
                                     {/* Análisis Temporal */}
                                     <button
                                         onClick={() => {
-                                            setIsMenuOpen(false);
+                                            toggleMenu();
                                             // Scroll to chart
                                             document.querySelector('.temporal-analysis')?.scrollIntoView({ behavior: 'smooth' });
                                         }}

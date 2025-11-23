@@ -1,22 +1,17 @@
 import React from 'react';
+import { useUI } from '../../context/UIContext';
 
 interface MobileMenuProps {
     isMobile: boolean;
-    isMobileSidebarOpen: boolean;
-    setIsMobileSidebarOpen: (isOpen: boolean) => void;
     refresh: () => Promise<void>;
-    isFiltersOpen: boolean;
-    setIsFiltersOpen: (isOpen: boolean) => void;
 }
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({
     isMobile,
-    isMobileSidebarOpen,
-    setIsMobileSidebarOpen,
     refresh,
-    isFiltersOpen,
-    setIsFiltersOpen
 }) => {
+    const { isMobileSidebarOpen, toggleMobileSidebar, toggleFilters } = useUI();
+
     if (!isMobile) return null;
 
     return (
@@ -24,7 +19,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             <div className="relative">
                 <button
                     className="mobile-menu-button fixed top-16 right-4 z-[1050] lg:hidden flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-3 bg-gray-800/95 hover:bg-gray-700 rounded-lg border border-gray-600 transition-all duration-200 backdrop-blur-sm shadow-lg"
-                    onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                    onClick={toggleMobileSidebar}
                     aria-label="Menú principal"
                 >
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +35,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-bold text-white">Controles</h3>
                                 <button
-                                    onClick={() => setIsMobileSidebarOpen(false)}
+                                    onClick={toggleMobileSidebar}
                                     className="p-1 text-gray-400 hover:text-white"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +48,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                                 {/* Actualizar Datos */}
                                 <button
                                     onClick={() => {
-                                        setIsMobileSidebarOpen(false);
+                                        toggleMobileSidebar();
                                         refresh();
                                     }}
                                     className="w-full flex items-center gap-3 px-3 py-3 hover:bg-gray-700 rounded-lg transition-all duration-200"
@@ -72,8 +67,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                                 {/* Filtros Avanzados */}
                                 <button
                                     onClick={() => {
-                                        setIsMobileSidebarOpen(false);
-                                        setIsFiltersOpen(!isFiltersOpen);
+                                        toggleMobileSidebar();
+                                        toggleFilters();
                                     }}
                                     className="w-full flex items-center gap-3 px-3 py-3 hover:bg-gray-700 rounded-lg transition-all duration-200"
                                 >
@@ -91,7 +86,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                                 {/* Monitor de Tiempo Real */}
                                 <button
                                     onClick={() => {
-                                        setIsMobileSidebarOpen(false);
+                                        toggleMobileSidebar();
                                         document.querySelector('.monitor-satelital')?.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                     className="w-full flex items-center gap-3 px-3 py-3 hover:bg-gray-700 rounded-lg transition-all duration-200"
@@ -110,7 +105,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                                 {/* Análisis Temporal */}
                                 <button
                                     onClick={() => {
-                                        setIsMobileSidebarOpen(false);
+                                        toggleMobileSidebar();
                                         document.querySelector('.temporal-analysis')?.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                     className="w-full flex items-center gap-3 px-3 py-3 hover:bg-gray-700 rounded-lg transition-all duration-200"
@@ -129,7 +124,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                                 {/* Información del Sistema */}
                                 <button
                                     onClick={() => {
-                                        setIsMobileSidebarOpen(false);
+                                        toggleMobileSidebar();
                                         document.querySelector('.info-sistema')?.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                     className="w-full flex items-center gap-3 px-3 py-3 hover:bg-gray-700 rounded-lg transition-all duration-200"
@@ -154,7 +149,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             {isMobile && isMobileSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-30 z-30 lg:hidden"
-                    onClick={() => setIsMobileSidebarOpen(false)}
+                    onClick={toggleMobileSidebar}
                 />
             )}
         </>

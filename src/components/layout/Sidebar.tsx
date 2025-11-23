@@ -2,60 +2,53 @@ import React, { Suspense } from 'react';
 import FilterPanel, { type FilterCriteria } from '../filters/FilterPanel';
 import Skeleton from '../ui/Skeleton';
 import type { FirePoint } from '../../types/fire';
+import { useUI } from '../../context/UIContext';
 
 // Lazy loading para componentes pesados
 const FiresChart = React.lazy(() => import('../dashboard/FiresChart'));
 
 interface SidebarProps {
     isMobile: boolean;
-    isMobileSidebarOpen: boolean;
     filteredFires: FirePoint[];
     availableSatellites: string[];
     refresh: () => Promise<void>;
-    isFiltersOpen: boolean;
-    setIsFiltersOpen: (isOpen: boolean) => void;
     activeFilters: FilterCriteria;
     handleFilterChange: (filters: FilterCriteria) => void;
     handleResetFiltersApp: () => void;
     loading: boolean;
     totalFires: number;
-    isStatsCollapsed: boolean;
-    setIsStatsCollapsed: (isCollapsed: boolean) => void;
-    setModalCategory: (category: 'critical' | 'moderate' | 'total' | 'satellites') => void;
-    setModalTitle: (title: string) => void;
-    setModalFires: (fires: FirePoint[]) => void;
-    setIsModalOpen: (isOpen: boolean) => void;
     appVersion: string;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
     isMobile,
-    isMobileSidebarOpen,
     filteredFires,
     availableSatellites,
     refresh,
-    isFiltersOpen,
-    setIsFiltersOpen,
     activeFilters,
     handleFilterChange,
     handleResetFiltersApp,
     loading,
     totalFires,
-    isStatsCollapsed,
-    setIsStatsCollapsed,
-    setModalCategory,
-    setModalTitle,
-    setModalFires,
-    setIsModalOpen,
     appVersion
 }) => {
+    const {
+        isMobileSidebarOpen,
+        toggleMobileSidebar,
+        isFiltersOpen,
+        setIsFiltersOpen,
+        isStatsCollapsed,
+        toggleStats,
+        openModal,
+    } = useUI();
+
     return (
         <>
             {/* Overlay para cerrar sidebar en mobile */}
             {isMobile && isMobileSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-[1400] lg:hidden"
-                    onClick={() => setIsFiltersOpen(false)}
+                    onClick={toggleMobileSidebar}
                 />
             )}
 
@@ -135,10 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <div className="grid grid-cols-2 gap-3">
                             <button
                                 onClick={() => {
-                                    setModalCategory('critical');
-                                    setModalTitle('Incendios de Alta Confianza');
-                                    setModalFires(filteredFires.filter(f => f.confidence === 'high'));
-                                    setIsModalOpen(true);
+                                    openModal('critical', 'Incendios de Alta Confianza', filteredFires.filter(f => f.confidence === 'high'));
                                 }}
                                 className="bg-gradient-to-br from-red-900/30 to-red-800/20 hover:from-red-800/40 hover:to-red-700/30 border border-red-700/50 rounded-lg p-3 transition-all duration-300 backdrop-blur-sm group"
                             >
@@ -148,10 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             </button>
                             <button
                                 onClick={() => {
-                                    setModalCategory('total');
-                                    setModalTitle('Dataset Completo de Detecciones');
-                                    setModalFires(filteredFires);
-                                    setIsModalOpen(true);
+                                    openModal('total', 'Dataset Completo de Detecciones', filteredFires);
                                 }}
                                 className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 hover:from-blue-800/40 hover:to-blue-700/30 border border-blue-700/50 rounded-lg p-3 transition-all duration-300 backdrop-blur-sm group"
                             >
@@ -161,10 +148,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             </button>
                             <button
                                 onClick={() => {
-                                    setModalCategory('moderate');
-                                    setModalTitle('Incendios de Confianza Moderada');
-                                    setModalFires(filteredFires.filter(f => f.confidence === 'medium'));
-                                    setIsModalOpen(true);
+                                    openModal('moderate', 'Incendios de Confianza Moderada', filteredFires.filter(f => f.confidence === 'medium'));
                                 }}
                                 className="bg-gradient-to-br from-orange-900/30 to-amber-800/20 hover:from-orange-800/40 hover:to-amber-700/30 border border-orange-700/50 rounded-lg p-3 transition-all duration-300 backdrop-blur-sm group"
                             >
@@ -174,10 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             </button>
                             <button
                                 onClick={() => {
-                                    setModalCategory('satellites');
-                                    setModalTitle('Cobertura Satelital Activa');
-                                    setModalFires(filteredFires.filter(f => f.satellite));
-                                    setIsModalOpen(true);
+                                    openModal('satellites', 'Cobertura Satelital Activa', filteredFires.filter(f => f.satellite));
                                 }}
                                 className="bg-gradient-to-br from-emerald-900/30 to-green-800/20 hover:from-emerald-800/40 hover:to-green-700/30 border border-emerald-700/50 rounded-lg p-3 transition-all duration-300 backdrop-blur-sm group"
                             >
@@ -244,7 +225,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 </div>
                             </div>
                             <button
-                                onClick={() => setIsStatsCollapsed(!isStatsCollapsed)}
+                                onClick={toggleStats}
                                 className="p-1 hover:bg-emerald-700/70 rounded-lg transition-all duration-200 text-emerald-300 hover:text-emerald-200"
                             >
                                 <svg
@@ -325,7 +306,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 {/* Enlaces profesionales */}
                                 <div className="flex items-center gap-3">
                                     <a
-                                        href="https://github.com/camiloquirogadev"
+                                        href="https://github.com/camiloquirogadev/patagonia-verde"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-1.5 text-gray-300 hover:text-white transition-colors text-xs group"

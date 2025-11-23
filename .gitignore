@@ -20,7 +20,6 @@ coverage
 # Build outputs
 node_modules/
 dist/
-dist-ssr/
 build/
 *.local
 
@@ -61,8 +60,8 @@ deploy-config.json
 deployment-secrets.yml
 
 # Vercel & Netlify
-.vercel
-.netlify
+.vercel/
+.netlify/
 
 # OS files
 Thumbs.db
