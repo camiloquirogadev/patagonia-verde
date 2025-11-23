@@ -100,7 +100,7 @@ const FiresChart: React.FC<FiresChartProps> = ({
     // Agrupar incendios por fecha y confianza
     const groupedFires = fires.reduce((acc, fire) => {
       if (!fire.date || !isValid(parseISO(fire.date))) return acc;
-      
+
       const date = format(parseISO(fire.date), 'dd/MM/yyyy');
       if (!acc[date]) {
         acc[date] = { total: 0, high: 0, medium: 0, low: 0 };
@@ -134,13 +134,13 @@ const FiresChart: React.FC<FiresChartProps> = ({
     // Calcular tendencia (últimos 3 días vs primeros 3 días)
     const recent = values.slice(-3).reduce((sum, val) => sum + val, 0) / Math.min(3, values.length);
     const initial = values.slice(0, 3).reduce((sum, val) => sum + val, 0) / Math.min(3, values.length);
-    
+
     let trend: 'increasing' | 'decreasing' | 'stable' = 'stable';
     if (recent > initial * 1.2) trend = 'increasing';
     else if (recent < initial * 0.8) trend = 'decreasing';
 
     // Verificar aumento reciente (últimos 2 días)
-    const recentIncrease = values.length >= 2 && 
+    const recentIncrease = values.length >= 2 &&
       values[values.length - 1] > values[values.length - 2] * 1.5;
 
     // Nivel de actividad
@@ -371,7 +371,7 @@ const FiresChart: React.FC<FiresChartProps> = ({
       ) : (
         <>
           {/* Métricas de análisis temporal */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
             <div className="bg-gray-700/30 rounded-md sm:rounded-lg p-2 sm:p-3 text-center">
               <div className="text-sm sm:text-lg font-bold text-white">{averageDaily}</div>
               <div className="text-xs text-gray-400">Promedio diario</div>
@@ -399,7 +399,7 @@ const FiresChart: React.FC<FiresChartProps> = ({
             <div className="mb-3 sm:mb-4 bg-red-900/30 border border-red-700/50 rounded-md sm:rounded-lg p-2 sm:p-3">
               <div className="flex items-center gap-2 text-red-400">
                 <svg className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
                 <span className="text-xs sm:text-sm font-medium">⚠️ Aumento significativo detectado</span>
               </div>

@@ -1,80 +1,72 @@
-# Patagonia Verde - Monitoreo de Incendios Forestales
+# Patagonia Verde FIRMS
+**Sistema de Monitoreo de Incendios Forestales** - Detección satelital en tiempo real
 
-**Plataforma de análisis geoespacial para detección temprana de incendios forestales en la Patagonia usando datos satelitales NASA FIRMS**
+[![React](https://img.shields.io/badge/React-19.1-blue?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript)](https://typescriptlang.org)
+[![Leaflet](https://img.shields.io/badge/Leaflet-1.9-green?logo=leaflet)](https://leafletjs.com)
+[![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-19.1.0-blue?logo=react" alt="React">
-  <img src="https://img.shields.io/badge/TypeScript-5.8.3-blue?logo=typescript" alt="TypeScript">
-  <img src="https://img.shields.io/badge/Leaflet-1.9.4-green?logo=leaflet" alt="Leaflet">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-</p>
+## Descripción
 
-## 🎯 Características
+Plataforma web para análisis geoespacial de incendios forestales en la Patagonia usando datos NASA FIRMS (MODIS/VIIRS). Visualización interactiva en tiempo real con filtros avanzados y análisis temporal.
 
-- **Datos en tiempo real** desde NASA FIRMS (MODIS/VIIRS)
-- **Mapa interactivo** con clustering de focos de calor
-- **Filtros avanzados** por fecha, temperatura y confianza
-- **Análisis temporal** con gráficos y tendencias
-- **Responsive design** optimizado para móviles
+## Características
 
-## 🚀 Instalación
+- Datos en tiempo real desde NASA FIRMS
+- Mapa interactivo (Leaflet + CartoDB)
+- Análisis temporal con gráficos (Recharts)
+- Filtros por fecha, temperatura y confianza
+- Responsive design (mobile-first)
+- Performance optimizado (~188KB gzip)
+
+## Instalación
 
 ```bash
-git clone https://github.com/camiloquirogadev/patagonia-verde.git
+git clone https://github.com/camiloquirogadev/patagonia-verde
 cd patagonia-verde
 npm install
 npm run dev
 ```
 
-## 🛠️ Tecnologías
+## Stack Tecnológico
 
-**Frontend**: React 19, TypeScript, Vite  
-**Mapas**: Leaflet + CartoDB  
-**Datos**: NASA FIRMS (MODIS/VIIRS)  
-**Estilos**: Tailwind CSS
+| Categoría | Tecnologías |
+|-----------|-------------|
+| Frontend | React 19, TypeScript, Vite |
+| Mapas | Leaflet, CartoDB Tiles |
+| Datos | NASA FIRMS API (MODIS/VIIRS) |
+| UI | Tailwind CSS, Recharts |
+| Testing | Vitest, Testing Library |
 
-## 📊 Datos
+## Fuente de Datos
 
-**NASA FIRMS** - Sistema de información de incendios  
-**Sensores**: MODIS (1km), VIIRS (375m)  
-**Actualización**: Near real-time (3-6h)
+**NASA FIRMS** - Fire Information for Resource Management System  
+- Sensores: MODIS (1km), VIIRS (375m)  
+- Actualización: Near real-time (3-6h latency)  
+- Coverage: Global, Patagonia focus
 
-## 🌐 Deploy
+## Scripts
 
-### Vercel (Recomendado)
 ```bash
-npm run build
-npx vercel --prod
+npm run dev      # Development server
+npm run build    # Production build
+npm run preview  # Preview build locally
+npm test         # Run tests
+npm run lint     # Lint code
 ```
 
-### Netlify
-```bash
-npm run build
-# Arrastra carpeta 'dist' a netlify.com/drop
-```
+## Documentación
 
-## 🔧 Scripts
+- [Contributing Guide](docs/CONTRIBUTING.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Deployment](docs/DEPLOY.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Security](SECURITY.md)
 
-- `npm run dev` - Servidor de desarrollo
-- `npm run build` - Build de producción
-- `npm run preview` - Preview del build
-- `npm test` - Ejecutar tests
-- `npm run lint` - Verificar código
+## Licencia
 
-## 🤝 Contribuciones
-
-1. Fork del proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -m 'feat: agregar nueva funcionalidad'`)
-4. Push rama (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
-
-Ver [CONTRIBUTING.md](CONTRIBUTING.md) para detalles.
-
-## 📄 Licencia
-
-MIT License - ver [LICENSE](LICENSE) para detalles.
+MIT © [Camilo Quiroga](https://github.com/camiloquirogadev)
 
 ---
 
-**Desarrollado por [Camilo Quiroga](https://github.com/camiloquirogadev)** • Proyecto personal 2025
+**Proyecto Final** • Universidad • 2025

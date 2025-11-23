@@ -19,12 +19,14 @@ export const getMapboxToken = async (): Promise<string> => {
   return token;
 };
 
+import type { FirePoint } from '../types/fire';
+
 /**
  * Obtiene datos de incendios desde el servidor backend
  * @returns Datos de incendios en formato JSON
  * @throws Error si la petición falla
  */
-export const fetchFiresData = async (): Promise<any> => {
+export const fetchFiresData = async (): Promise<{ fires: FirePoint[] }> => {
   const response = await fetch(`${API_BASE_URL}/fires`);
   if (!response.ok) {
     throw new Error(`Error HTTP ${response.status}: No se pudieron cargar los datos`);

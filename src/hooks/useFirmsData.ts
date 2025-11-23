@@ -1,20 +1,5 @@
-/**
- * Hook optimizado para gestionar datos de incendios forestales NASA FIRMS
- * 
- * Custom hook que encapsula la lógica de obtención, validación y cache
- * de datos satelitales de incendios forestales. Implementa buenas prácticas
- * de desarrollo React con optimizaciones de rendimiento.
- * 
- * Características principales:
- * - Cache en memoria con TTL para reducir requests redundantes
- * - Validación robusta de datos geoespaciales
- * - Memoización de estadísticas calculadas
- * - Manejo de errores con fallbacks graceful
- * 
- * @author Camilo Quiroga - Desarrollador Full Stack & Geomática
- * @version 1.0.0
- * @since 2025-10-01
- */
+// Hook for managing NASA FIRMS fire data
+// Handles data fetching, validation, and caching
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { FirePoint } from "../types/fire";
 import { staticFiresData } from "../data/static-fires";
@@ -32,10 +17,10 @@ interface UseFirmsDataReturn {
   };
 }
 
-// Cache simple para evitar reprocesamiento
+// In-memory cache (5 min TTL)
 let cachedData: FirePoint[] | null = null;
 let cacheTimestamp: number = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+const CACHE_DURATION = 5 * 60 * 1000;
 
 export const useFirmsData = (): UseFirmsDataReturn => {
   const [data, setData] = useState<FirePoint[]>([]);
@@ -55,9 +40,9 @@ export const useFirmsData = (): UseFirmsDataReturn => {
       // Validación de coordenadas
       const lat = Number(fireObj.latitude);
       const lng = Number(fireObj.longitude);
-      
-      if (!Number.isFinite(lat) || !Number.isFinite(lng) || 
-          lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+
+      if (!Number.isFinite(lat) || !Number.isFinite(lng) ||
+        lat < -90 || lat > 90 || lng < -180 || lng > 180) {
         return null;
       }
 
@@ -94,7 +79,7 @@ export const useFirmsData = (): UseFirmsDataReturn => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Verificar cache
       const now = Date.now();
       if (cachedData && (now - cacheTimestamp) < CACHE_DURATION) {
@@ -102,28 +87,28 @@ export const useFirmsData = (): UseFirmsDataReturn => {
         setLoading(false);
         return;
       }
-      
+
       // Simular latencia solo en desarrollo
       if (process.env.NODE_ENV === 'development') {
         await new Promise(resolve => setTimeout(resolve, 300));
       }
-      
+
       // Validar estructura de datos
       if (!staticFiresData?.fires || !Array.isArray(staticFiresData.fires)) {
         throw new Error('Estructura de datos inválida');
       }
-      
+
       // Procesar datos de forma eficiente
       const validatedData = staticFiresData.fires
         .map(validateFirePoint)
         .filter((fire): fire is FirePoint => fire !== null);
-      
+
       // Actualizar cache
       cachedData = validatedData;
       cacheTimestamp = now;
-      
+
       setData(validatedData);
-      
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar datos de incendios';
       setError(new Error(errorMessage));
@@ -152,9 +137,9 @@ export const useFirmsData = (): UseFirmsDataReturn => {
     fetchFires();
   }, [fetchFires]);
 
-  return { 
-    fires: data, 
-    loading, 
+  return {
+    fires: data,
+    loading,
     error,
     refresh: fetchFires,
     stats
