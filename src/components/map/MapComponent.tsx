@@ -21,7 +21,7 @@ const FirePopupContent = ({ fire, onMoreDetails }: { fire: FirePoint; onMoreDeta
     <div className="p-3 min-w-[250px] font-sans">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-md">
-          <span className="text-white text-lg font-bold">FIRE</span>
+          <span className="text-white text-lg">🔥</span>
         </div>
         <div>
           <h3 className="font-bold text-base text-gray-800">Incendio Detectado</h3>

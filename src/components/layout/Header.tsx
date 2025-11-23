@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
                 {/* Logo y título principal */}
                 <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                        <span className="text-white text-lg sm:text-xl font-bold">FIRE</span>
+                        <span className="text-white text-lg sm:text-xl">🔥</span>
                     </div>
                     <div className="min-w-0">
                         <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white truncate">
