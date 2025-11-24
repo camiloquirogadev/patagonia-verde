@@ -113,6 +113,15 @@ personal-notes/
 .personal/
 .dev/
 
+# Documentación estratégica privada (solo local)
+ROADMAP_PRIVADO.md
+ESTRATEGIA_FINANCIERA.md
+CONTACTOS_INSTITUCIONALES.md
+PROPUESTAS_SUBSIDIOS.md
+*.private.md
+estrategia/
+planes-privados/
+
 # IDE specific
 .vscode/settings.json
 .vscode/launch.json

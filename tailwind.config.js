@@ -40,7 +40,22 @@ export default {
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
-      }
+      },
+      fontSize: {
+        'xs': ['0.875rem', { lineHeight: '1.5' }],      // 15.75px (antes 12px)
+        'sm': ['1rem', { lineHeight: '1.5' }],          // 18px (antes 14px)
+        'base': ['1.125rem', { lineHeight: '1.6' }],    // 20.25px (antes 16px)
+        'lg': ['1.25rem', { lineHeight: '1.6' }],       // 22.5px (antes 18px)
+        'xl': ['1.5rem', { lineHeight: '1.6' }],        // 27px (antes 20px)
+        '2xl': ['1.75rem', { lineHeight: '1.5' }],      // 31.5px (antes 24px)
+        '3xl': ['2rem', { lineHeight: '1.4' }],         // 36px (antes 30px)
+        '4xl': ['2.5rem', { lineHeight: '1.3' }],       // 45px (antes 36px)
+        '5xl': ['3rem', { lineHeight: '1.2' }],         // 54px (antes 48px)
+        '6xl': ['3.5rem', { lineHeight: '1.1' }],       // 63px (antes 60px)
+        '7xl': ['4rem', { lineHeight: '1.1' }],         // 72px (antes 72px)
+        '8xl': ['5rem', { lineHeight: '1' }],           // 90px (antes 96px)
+        '9xl': ['6rem', { lineHeight: '1' }],           // 108px (antes 128px)
+      },
     },
   },
   darkMode: 'class',

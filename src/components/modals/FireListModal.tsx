@@ -149,8 +149,8 @@ export const FireListModal: React.FC<FireListModalProps> = ({
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(95vh-200px)] sm:max-h-[calc(90vh-200px)]">
+                {/* Content - Optimized with CSS containment for better performance */}
+                <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(95vh-200px)] sm:max-h-[calc(90vh-200px)] scroll-smooth">
                     {fires.length === 0 ? (
                         <div className="text-center py-8 sm:py-12">
                             <h3 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">No hay incendios en esta categoría</h3>
@@ -166,8 +166,11 @@ export const FireListModal: React.FC<FireListModalProps> = ({
                                 const locationName = getLocationName(fire.latitude, fire.longitude);
 
                                 return (
-                                    <div key={fire.id} className="bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg transition-all duration-300 hover:border-orange-300">
-                                        {/* Header del incendio */}
+                                    <div 
+                                        key={fire.id} 
+                                        className="bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg transition-all duration-300 hover:border-orange-300"
+                                        style={{ contentVisibility: 'auto', containIntrinsicSize: '0 280px' }}
+                                    >
                                         <div className="flex items-start justify-between mb-3 sm:mb-4">
                                             <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                                                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base flex-shrink-0">

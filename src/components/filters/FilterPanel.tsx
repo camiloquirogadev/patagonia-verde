@@ -121,7 +121,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const filterPercentage = totalFires > 0 ? Math.round((filteredFires / totalFires) * 100) : 0;
 
   return (
-    <div className="bg-gray-800 rounded-lg p-3 sm:p-4 shadow-lg border border-gray-700">
+    <div className="bg-gray-800 rounded-lg p-3 sm:p-4 shadow-lg border border-gray-700" role="search" aria-label="Panel de filtros de incendios">
       {/* Cabecera moderna con estadísticas */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex-1 min-w-0">
@@ -184,7 +184,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           {/* Rango de fechas con mejor diseño */}
           <div className="space-y-2 sm:space-y-3">
             <div className="flex items-center gap-2">
-              <svg className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <h4 className="text-xs sm:text-sm font-medium text-blue-300">Rango de Fechas</h4>
@@ -223,7 +223,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             </div>
             <div className="space-y-2 sm:space-y-3">
               <div className="flex items-center gap-2 sm:gap-3">
-                <span className="text-xs text-gray-400 w-6 sm:w-8 flex-shrink-0">Min</span>
+                <span className="text-xs text-gray-400 w-6 sm:w-8 flex-shrink-0" id="minBrightnessLabel">Min</span>
                 <input
                   type="range"
                   min="100"
@@ -232,11 +232,17 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   value={minBrightness || DEFAULT_MIN_BRIGHTNESS}
                   onChange={e => setMinBrightness(Number(e.target.value))}
                   className="flex-1 h-1.5 sm:h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                  aria-label="Brillo mínimo"
+                  aria-labelledby="minBrightnessLabel"
+                  aria-valuemin={100}
+                  aria-valuemax={1000}
+                  aria-valuenow={minBrightness || DEFAULT_MIN_BRIGHTNESS}
+                  aria-valuetext={`${minBrightness || DEFAULT_MIN_BRIGHTNESS} grados Kelvin`}
                 />
-                <span className="text-xs text-white w-10 sm:w-12 text-right flex-shrink-0">{minBrightness || DEFAULT_MIN_BRIGHTNESS}K</span>
+                <span className="text-xs text-white w-10 sm:w-12 text-right flex-shrink-0" aria-live="polite">{minBrightness || DEFAULT_MIN_BRIGHTNESS}K</span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
-                <span className="text-xs text-gray-400 w-6 sm:w-8 flex-shrink-0">Max</span>
+                <span className="text-xs text-gray-400 w-6 sm:w-8 flex-shrink-0" id="maxBrightnessLabel">Max</span>
                 <input
                   type="range"
                   min="100"
@@ -245,8 +251,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   value={maxBrightness || DEFAULT_MAX_BRIGHTNESS}
                   onChange={e => setMaxBrightness(Number(e.target.value))}
                   className="flex-1 h-1.5 sm:h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                  aria-label="Brillo máximo"
+                  aria-labelledby="maxBrightnessLabel"
+                  aria-valuemin={100}
+                  aria-valuemax={1000}
+                  aria-valuenow={maxBrightness || DEFAULT_MAX_BRIGHTNESS}
+                  aria-valuetext={`${maxBrightness || DEFAULT_MAX_BRIGHTNESS} grados Kelvin`}
                 />
-                <span className="text-xs text-white w-10 sm:w-12 text-right flex-shrink-0">{maxBrightness || DEFAULT_MAX_BRIGHTNESS}K</span>
+                <span className="text-xs text-white w-10 sm:w-12 text-right flex-shrink-0" aria-live="polite">{maxBrightness || DEFAULT_MAX_BRIGHTNESS}K</span>
               </div>
             </div>
           </div>
@@ -275,6 +287,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                     className={`px-2 py-1.5 sm:px-3 sm:py-2 border rounded-md sm:rounded-lg text-xs font-medium transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 ${
                       colorClasses[level.color as keyof typeof colorClasses]
                     }`}
+                    aria-label={`Filtrar por confianza ${level.label.toLowerCase()}`}
+                    aria-pressed={isSelected}
+                    role="switch"
                   >
                     {level.label}
                   </button>
@@ -296,6 +311,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                 value={selectedSatellite || ''}
                 onChange={e => setSelectedSatellite(e.target.value || null)}
                 className="w-full p-2 bg-gray-700/50 border border-gray-600 rounded-md sm:rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white text-xs sm:text-sm transition-all duration-200 hover:bg-gray-700"
+                aria-label="Seleccionar satélite"
               >
                 <option value="">Todos los satélites</option>
                 {availableSatellites.map(sat => (

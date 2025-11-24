@@ -10,7 +10,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
     const { isMenuOpen, toggleMenu, setIsFiltersOpen } = useUI();
     return (
-        <header className="bg-gray-900 text-white shadow-lg border-b border-gray-700 relative z-[1100]">
+        <header className="bg-gray-900 text-white shadow-lg border-b border-gray-700 relative z-[1100]" role="banner">
             <div className="flex justify-between items-center gap-2 sm:gap-4 p-3 sm:p-4">
                 {/* Logo y título principal */}
                 <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
@@ -32,8 +32,11 @@ export const Header: React.FC<HeaderProps> = ({
                         <button
                             onClick={toggleMenu}
                             className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-600 transition-all duration-200"
+                            aria-label="Menú de controles"
+                            aria-expanded={isMenuOpen}
+                            aria-haspopup="true"
                         >
-                            <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                             <span className="text-sm font-medium">Controles</span>
@@ -44,7 +47,11 @@ export const Header: React.FC<HeaderProps> = ({
 
                         {/* Menú desplegable */}
                         {isMenuOpen && (
-                            <div className="absolute top-full right-0 mt-2 w-64 bg-gray-800 rounded-lg border border-gray-600 shadow-xl z-[2000] overflow-hidden">
+                            <div 
+                                className="absolute top-full right-0 mt-2 w-64 bg-gray-800 rounded-lg border border-gray-600 shadow-xl z-[2000] overflow-hidden"
+                                role="menu"
+                                aria-label="Opciones de control"
+                            >
                                 <div className="p-2">
                                     {/* Filtros Avanzados */}
                                     <button
@@ -55,6 +62,8 @@ export const Header: React.FC<HeaderProps> = ({
                                             document.querySelector('.filter-panel')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
                                         className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-gray-700 rounded-lg transition-all duration-200"
+                                        role="menuitem"
+                                        aria-label="Abrir filtros avanzados"
                                     >
                                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,6 +84,8 @@ export const Header: React.FC<HeaderProps> = ({
                                             document.querySelector('.monitor-satelital')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
                                         className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-gray-700 rounded-lg transition-all duration-200"
+                                        role="menuitem"
+                                        aria-label="Ir a monitor de tiempo real"
                                     >
                                         <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
                                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,6 +106,8 @@ export const Header: React.FC<HeaderProps> = ({
                                             document.querySelector('.temporal-analysis')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
                                         className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-gray-700 rounded-lg transition-all duration-200"
+                                        role="menuitem"
+                                        aria-label="Ir a análisis temporal"
                                     >
                                         <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,6 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <button
                         className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg border border-gray-600 transition-all duration-200"
                         onClick={refresh}
+                        aria-label="Actualizar datos de incendios"
                     >
                         <svg className="w-4 h-4 text-gray-300 hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

@@ -143,11 +143,21 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
           transition: 'all 0.2s ease',
           marginTop: '10px'
         });
-        container.innerHTML = '⊕';
+        container.innerHTML = '🗺️';
         container.title = 'Centrar en Patagonia';
+        container.setAttribute('role', 'button');
+        container.setAttribute('aria-label', 'Centrar mapa en la región de la Patagonia');
+        container.setAttribute('tabindex', '0');
 
         container.onclick = function () {
           map.setView([-45.0, -71.0], 7);
+        };
+
+        container.onkeydown = function (e: KeyboardEvent) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            map.setView([-45.0, -71.0], 7);
+          }
         };
 
         return container;
@@ -176,11 +186,15 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
             transition: 'all 0.2s ease',
             marginTop: '10px'
           });
-          container.innerHTML = '◉';
+          container.innerHTML = '📍';
           container.title = 'Mi ubicación';
+          container.setAttribute('role', 'button');
+          container.setAttribute('aria-label', 'Mostrar mi ubicación actual en el mapa');
+          container.setAttribute('tabindex', '0');
 
           container.onclick = function () {
-            container.innerHTML = '⏳';
+            container.innerHTML = '⌛';
+            container.setAttribute('aria-label', 'Obteniendo ubicación...');
             navigator.geolocation.getCurrentPosition(
               (position) => {
                 const { latitude, longitude } = position.coords;
@@ -189,16 +203,26 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
                   .addTo(map)
                   .bindPopup('Tu ubicación actual')
                   .openPopup();
-                container.innerHTML = '◉';
+                container.innerHTML = '📍';
+                container.setAttribute('aria-label', 'Mostrar mi ubicación actual en el mapa');
               },
               (error) => {
                 console.error('Error getting location:', error);
-                container.innerHTML = '✕';
+                container.innerHTML = '❌';
+                container.setAttribute('aria-label', 'Error al obtener ubicación');
                 setTimeout(() => {
-                  container.innerHTML = '◉';
+                  container.innerHTML = '📍';
+                  container.setAttribute('aria-label', 'Mostrar mi ubicación actual en el mapa');
                 }, 2000);
               }
             );
+          };
+
+          container.onkeydown = function (e: KeyboardEvent) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              container.click();
+            }
           };
 
           return container;
@@ -275,14 +299,19 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
   }, [fires, onMarkerClick]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-gray-100">
+    <div className="relative w-full h-full overflow-hidden bg-gray-100" role="region" aria-label="Mapa interactivo de incendios">
       <div ref={mapElementRef} className="w-full h-full absolute inset-0" />
 
       {loading && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div 
+          className="absolute inset-0 bg-black/50 flex items-center justify-center z-50"
+          role="status"
+          aria-live="polite"
+          aria-label="Cargando mapa de incendios"
+        >
           <div className="bg-white p-6 rounded-xl shadow-2xl">
             <div className="flex items-center gap-4">
-              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
               <p className="text-gray-800 font-medium">Cargando mapa...</p>
             </div>
           </div>
