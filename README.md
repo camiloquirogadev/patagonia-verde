@@ -10,6 +10,12 @@ Plataforma web profesional para analisis en tiempo real de incendios forestales 
 [![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.3.0-blue)](CHANGELOG.md)
 
+## Vista Previa
+
+![Patagonia Verde - Interfaz Principal](docs/images/screenshot.png)
+
+*Sistema de monitoreo en tiempo real mostrando detecciones activas de incendios en la region patagonica con mapa interactivo y estadisticas en vivo.*
+
 ## Descripcion General
 
 Sistema de informacion geografica (SIG) especializado en monitoreo y analisis de incendios forestales en la region patagonica. Integra datos satelitales de NASA FIRMS con tecnologias geoespaciales modernas para proporcionar visualizacion interactiva, analisis temporal y herramientas de decision en tiempo cuasi-real.
