@@ -10,11 +10,15 @@ Plataforma web profesional para analisis en tiempo real de incendios forestales 
 [![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.3.0-blue)](CHANGELOG.md)
 
-## Vista Previa
+## 🔥 Vista Previa
 
-![Patagonia Verde - Interfaz Principal](https://raw.githubusercontent.com/camiloquirogadev/patagonia-verde/main/docs/images/screenshot.png)
+<p align="center">
+  <img src="./docs/images/screenshot.png" alt="Patagonia Verde - Sistema de Monitoreo" width="100%">
+</p>
 
-*Sistema de monitoreo en tiempo real mostrando detecciones activas de incendios en la region patagonica con mapa interactivo y estadisticas en vivo.*
+<p align="center">
+  <em>Sistema de monitoreo en tiempo real mostrando detecciones activas de incendios en la región patagónica con mapa interactivo y estadísticas en vivo.</em>
+</p>
 
 ## Descripcion General
 
