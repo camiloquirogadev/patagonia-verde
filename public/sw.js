@@ -1,5 +1,5 @@
 // Service Worker for Patagonia Verde PWA
-const CACHE_NAME = 'patagonia-verde-v1.0.0';
+const CACHE_NAME = 'patagonia-verde-v1.3.0';
 const urlsToCache = [
   '/',
   '/index.html',
