@@ -8,7 +8,7 @@ Plataforma web profesional para analisis en tiempo real de incendios forestales 
 [![Leaflet](https://img.shields.io/badge/Leaflet-1.9-green?logo=leaflet)](https://leafletjs.com)
 [![Vite](https://img.shields.io/badge/Vite-6.3-purple?logo=vite)](https://vitejs.dev)
 [![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.3.0-blue)](CHANGELOG_v1.3.0.md)
+[![Version](https://img.shields.io/badge/Version-1.3.0-blue)](CHANGELOG.md)
 
 ## Descripcion General
 
@@ -84,6 +84,10 @@ Democratizar el acceso a informacion geoespacial sobre incendios forestales, fac
 - **date-fns 4.1.0** - Manipulacion y formateo de fechas (tree-shakeable)
 - **Express 5.1.0** - Server HTTP opcional para desarrollo local
 - **CORS 2.8.5** - Configuracion CORS para integraciones API
+
+### Monitoreo y Analytics
+- **@vercel/speed-insights** - Metricas de rendimiento en tiempo real (Core Web Vitals)
+- **Logger utility** - Sistema de logging con eliminacion automatica en produccion
 
 ## Instalacion y Configuracion
 
@@ -234,12 +238,11 @@ Ver [SECURITY.md](SECURITY.md) para politica completa de seguridad.
 
 ## Documentacion Adicional
 
-- [CHANGELOG v1.1.0](CHANGELOG_v1.1.0.md) - Version inicial
-- [CHANGELOG v1.3.0](CHANGELOG_v1.3.0.md) - Version actual
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Arquitectura del sistema
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Guia de contribucion
-- [DEPLOY.md](DEPLOY.md) - Guia de deployment
-- [SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md) - Metodologia cientifica
+- [CHANGELOG.md](CHANGELOG.md) - Historial de versiones
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Arquitectura del sistema
+- [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) - Guia de contribucion
+- [docs/DEPLOY.md](docs/DEPLOY.md) - Guia de deployment
+- [docs/SCIENTIFIC_METHODOLOGY.md](docs/SCIENTIFIC_METHODOLOGY.md) - Metodologia cientifica
 - [SECURITY.md](SECURITY.md) - Politica de seguridad
 
 ## Licencia
@@ -257,7 +260,7 @@ Software Engineer - Especialista en Geomatica y Analisis Geoespacial
 
 - GitHub: [@camiloquirogadev](https://github.com/camiloquirogadev)
 - Email: quirogacamilodev@gmail.com
-- LinkedIn: [Camilo Quiroga](https://linkedin.com/in/camilo-quiroga)
+- LinkedIn: [Camilo Quiroga](https://www.linkedin.com/in/camilo-quiroga-dev/)
 
 ## Reconocimientos
 

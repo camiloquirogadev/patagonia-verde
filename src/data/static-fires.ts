@@ -12,7 +12,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -45.57,
       "longitude": -71.3,
       "brightness": 350,
-      "date": "2025-10-01T10:30:00Z",
+      "date": "2025-11-23T10:30:00Z",
       "confidence": "high",
       "satellite": "Terra"
     },
@@ -21,7 +21,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -42.1,
       "longitude": -71.8,
       "brightness": 280,
-      "date": "2025-10-01T14:15:00Z",
+      "date": "2025-11-23T14:15:00Z",
       "confidence": "medium",
       "satellite": "Aqua"
     },
@@ -30,7 +30,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -43.5,
       "longitude": -72.2,
       "brightness": 320,
-      "date": "2025-09-30T09:45:00Z",
+      "date": "2025-11-22T09:45:00Z",
       "confidence": "high",
       "satellite": "Terra"
     },
@@ -39,7 +39,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -44.2,
       "longitude": -70.8,
       "brightness": 290,
-      "date": "2025-09-30T16:20:00Z",
+      "date": "2025-11-22T16:20:00Z",
       "confidence": "medium",
       "satellite": "Aqua"
     },
@@ -48,7 +48,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -41.8,
       "longitude": -73.1,
       "brightness": 370,
-      "date": "2025-09-29T11:10:00Z",
+      "date": "2025-11-21T11:10:00Z",
       "confidence": "high",
       "satellite": "Terra"
     },
@@ -57,7 +57,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -46.3,
       "longitude": -72.5,
       "brightness": 310,
-      "date": "2025-09-29T15:40:00Z",
+      "date": "2025-11-21T15:40:00Z",
       "confidence": "high",
       "satellite": "Aqua"
     },
@@ -66,7 +66,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -40.9,
       "longitude": -71.5,
       "brightness": 260,
-      "date": "2025-09-28T10:05:00Z",
+      "date": "2025-11-20T10:05:00Z",
       "confidence": "medium",
       "satellite": "Terra"
     },
@@ -75,7 +75,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -45.1,
       "longitude": -70.2,
       "brightness": 330,
-      "date": "2025-09-28T13:30:00Z",
+      "date": "2025-11-20T13:30:00Z",
       "confidence": "high",
       "satellite": "Aqua"
     },
@@ -84,7 +84,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -42.5,
       "longitude": -72.0,
       "brightness": 305,
-      "date": "2025-10-02T08:15:00Z",
+      "date": "2025-11-19T08:15:00Z",
       "confidence": "high",
       "satellite": "Terra"
     },
@@ -93,7 +93,7 @@ export const staticFiresData: { fires: FirePoint[] } = {
       "latitude": -44.8,
       "longitude": -71.1,
       "brightness": 275,
-      "date": "2025-10-02T12:45:00Z",
+      "date": "2025-11-19T12:45:00Z",
       "confidence": "medium",
       "satellite": "Aqua"
     }

@@ -2,6 +2,7 @@ import { useMemo, useCallback, useState } from 'react';
 import { parseISO, startOfDay, endOfDay } from 'date-fns';
 import type { FirePoint } from '../types/fire';
 import type { FilterCriteria } from '../components/filters/FilterPanel';
+import { logger } from '../utils/logger';
 
 export const initialFilterValues: FilterCriteria = {
     startDate: null,
@@ -69,7 +70,7 @@ export const useFireFilters = (fires: FirePoint[]) => {
 
                 return true;
             } catch (error) {
-                console.error(`Error filtering fire ${index}:`, error);
+                logger.error(`Error filtering fire ${index}:`, error);
                 return false;
             }
         });

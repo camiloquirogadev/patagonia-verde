@@ -112,7 +112,7 @@ export const useFirmsData = (): UseFirmsDataReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar datos de incendios';
       setError(new Error(errorMessage));
-      console.error('Error en useFirmsData:', err);
+      logger.error('Error en useFirmsData:', err);
     } finally {
       setLoading(false);
     }

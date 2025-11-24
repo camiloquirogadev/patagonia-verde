@@ -49,7 +49,7 @@ import {
 } from 'chart.js';
 import type { ChartData, ChartOptions } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
-import type { FirePoint } from '../../hooks/useFirmsData';
+import type { FirePoint } from '../../types/fire';
 import { format, parseISO, isValid } from 'date-fns';
 
 // Registrar componentes de Chart.js

@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { getLocationName } from '../../utils/locationUtils';
 import { getConfidenceDetails } from '../../utils/fireUtils';
+import { logger } from '../../utils/logger';
 
 interface MapComponentProps {
   fires: FirePoint[];
@@ -207,7 +208,7 @@ export default function MapComponent({ fires, onMarkerClick, loading = false }: 
                 container.setAttribute('aria-label', 'Mostrar mi ubicación actual en el mapa');
               },
               (error) => {
-                console.error('Error getting location:', error);
+                logger.error('Error getting location:', error);
                 container.innerHTML = '❌';
                 container.setAttribute('aria-label', 'Error al obtener ubicación');
                 setTimeout(() => {

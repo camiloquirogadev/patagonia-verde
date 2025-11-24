@@ -1,19 +1,19 @@
-import { useEffect, useCallback, useMemo, Suspense, useState } from 'react';
+import { useCallback, useEffect, useMemo, Suspense, useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { useFirmsData } from './hooks/useFirmsData';
-import { useFireFilters } from './hooks/useFireFilters';
-import { useUI } from './context/UIContext';
+import type { FirePoint } from './types/fire';
+import { APP_VERSION, MOBILE_BREAKPOINT } from './config/constants';
+import { Header } from './components/layout/Header';
+import { Sidebar } from './components/layout/Sidebar';
 import MapComponent from './components/map/MapComponent';
 import { FireListModal } from './components/modals/FireListModal';
 import LoadingSpinner from './components/ui/LoadingSpinner';
-import { Header } from './components/layout/Header';
-import { Sidebar } from './components/layout/Sidebar';
 import { MobileMenu } from './components/ui/MobileMenu';
-import { getLocationName } from './utils/locationUtils';
+import { useUI } from './context/UIContext';
+import { useFireFilters } from './hooks/useFireFilters';
+import { useFirmsData } from './hooks/useFirmsData';
 import { getConfidenceDetails } from './utils/fireUtils';
-import { APP_VERSION, MOBILE_BREAKPOINT } from './config/constants';
-import type { FirePoint } from './types/fire';
+import { getLocationName } from './utils/locationUtils';
 
 function App() {
   const { fires, loading, error, refresh } = useFirmsData();
