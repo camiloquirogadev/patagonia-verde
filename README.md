@@ -13,7 +13,7 @@ Plataforma web profesional para analisis en tiempo real de incendios forestales 
 ## 🔥 Vista Previa
 
 <p align="center">
-  <img src="./docs/images/screenshot.png" alt="Patagonia Verde - Sistema de Monitoreo" width="100%">
+  <img src="docs/images/screenshot.png" alt="Patagonia Verde - Sistema de Monitoreo" width="100%">
 </p>
 
 <p align="center">
