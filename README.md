@@ -12,7 +12,7 @@ Plataforma web profesional para analisis en tiempo real de incendios forestales 
 
 ## Vista Previa
 
-![Patagonia Verde - Interfaz Principal](docs/images/screenshot.PNG)
+![Patagonia Verde - Interfaz Principal](https://raw.githubusercontent.com/camiloquirogadev/patagonia-verde/main/docs/images/screenshot.PNG)
 
 *Sistema de monitoreo en tiempo real mostrando detecciones activas de incendios en la region patagonica con mapa interactivo y estadisticas en vivo.*
 
